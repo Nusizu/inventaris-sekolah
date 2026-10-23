@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', fn () => 'Halaman Admin')->name('dashboard');
+    Route::resource('categories', CategoryController::class)->except('show');
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
