@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -33,6 +34,16 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    public function loans(): HasMany
+    {
+       return $this->hasMany(Loan::class);
+    }   
+
+    public function activityLogs(): HasMany
+    {
+       return $this->hasMany(ActivityLog::class);
     }
 
     /**
