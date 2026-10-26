@@ -11,6 +11,8 @@ class Item extends Model
 {
     use SoftDeletes;
 
+    public const CONDITIONS = ['baik', 'rusak ringan', 'rusak berat'];
+
     protected $fillable = ['category_id', 'name', 'code', 'stock', 'condition'];
 
     public function category(): BelongsTo
