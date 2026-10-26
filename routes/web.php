@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\LoanController as AdminLoanController;
+use App\Http\Controllers\User\LoanController as UserLoanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,10 +25,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', fn () => 'Halaman Admin')->name('dashboard');
     Route::resource('categories', CategoryController::class)->except('show');
     Route::resource('items', ItemController::class)->except('show');
+    Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store']);
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', fn () => 'Halaman User')->name('dashboard');
+    Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
 });
 
 require __DIR__.'/auth.php';

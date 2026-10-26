@@ -24,4 +24,10 @@ class Item extends Model
     {
         return $this->hasMany(Loan::class);
     }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('stock', '>', 0)
+           ->where('condition', '!=', 'rusak berat');
+    }
 }

@@ -37,4 +37,11 @@ class Loan extends Model
     {
         return $this->hasOne(ReturnLog::class);
     }
+
+    public static function markOverdue(): int
+    {
+        return static::where('status', 'dipinjam')
+            ->whereDate('due_date', '<', today())
+            ->update(['status' => 'terlambat']);
+    }
 }

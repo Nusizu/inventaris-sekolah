@@ -24,6 +24,14 @@
                         <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
                             {{ __('Barang') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
+                            {{ __('Peminjaman') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
+                            {{ __('Peminjaman Saya') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -88,6 +96,14 @@
 
                 <x-responsive-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
                     {{ __('Barang') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
+                    {{ __('Peminjaman') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
+                    {{ __('Peminjaman Saya') }}
                 </x-responsive-nav-link>
             @endif
         </div>
