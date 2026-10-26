@@ -21,6 +21,6 @@ class ReturnLog extends Model
 
     public function loan(): BelongsTo
     {
-        return $this->belongsTo(Loan::class);
+        return $this->belongsTo(Loan::class)->withTrashed();
     }
 }

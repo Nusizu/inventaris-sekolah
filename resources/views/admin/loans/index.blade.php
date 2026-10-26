@@ -53,6 +53,7 @@
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Tanggal Pinjam</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Jatuh Tempo</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -65,10 +66,18 @@
                                     <td class="px-4 py-3">{{ $loan->loan_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3"><x-loan-status-badge :status="$loan->status" /></td>
+                                    <td class="px-4 py-3">
+                                        @if ($loan->status !== 'dikembalikan')
+                                            <a href="{{ route('admin.return-logs.create', $loan) }}"
+                                               class="text-indigo-600 hover:underline">Kembalikan</a>
+                                        @else
+                                            <span class="text-gray-400">Selesai</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-4 py-6 text-center text-gray-500">Belum ada data peminjaman.</td>
+                                    <td colspan="8" class="px-4 py-6 text-center text-gray-500">Belum ada data peminjaman.</td>
                                 </tr>
                             @endforelse
                         </tbody>

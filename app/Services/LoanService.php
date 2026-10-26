@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Loan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Models\ReturnLog;
 
 class LoanService
 {
@@ -39,6 +40,34 @@ class LoanService
             ]);
 
             return $loan->load(['user', 'item']);
+        });
+    }
+
+    public function returnLoan(Loan $loan, array $data): ReturnLog
+    {
+        return DB::transaction(function () use ($loan, $data) {
+            $loan = Loan::lockForUpdate()->findOrFail($loan->id);
+
+            if ($loan->status === 'dikembalikan' || $loan->returnLog()->withTrashed()->exists()) {
+                throw ValidationException::withMessages([
+                    'returned_at' => 'Peminjaman ini sudah dikembalikan sebelumnya.',
+                ]);
+            }
+
+            $returnLog = ReturnLog::create([
+                'loan_id' => $loan->id,
+                'returned_at' => $data['returned_at'],
+                'condition_on_return' => $data['condition_on_return'],
+                'notes' => $data['notes'] ?? null,
+            ]);
+
+            $loan->update(['status' => 'dikembalikan']);
+
+            Item::withTrashed()->lockForUpdate()
+                ->findOrFail($loan->item_id)
+                ->increment('stock', $loan->quantity);
+
+            return $returnLog->load(['loan.user', 'loan.item']);
         });
     }
 }
