@@ -32,6 +32,10 @@
                         <x-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
                             {{ __('Pengembalian') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
+                            {{ __('Activity Log') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
                             {{ __('Peminjaman Saya') }}
@@ -108,6 +112,10 @@
 
                 <x-responsive-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
                     {{ __('Pengembalian') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
+                    {{ __('Activity Log') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">

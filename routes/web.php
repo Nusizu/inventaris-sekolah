@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\LoanController as AdminLoanController;
@@ -32,6 +33,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
     Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('return-logs.create');
     Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('return-logs.store');
+
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
