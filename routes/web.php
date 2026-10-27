@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\LoanController as AdminLoanController;
 use App\Http\Controllers\Admin\ReturnLogController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\LoanController as UserLoanController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
     Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('return-logs.create');
     Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('return-logs.store');
+
+    Route::resource('users', UserController::class)->except('show');
 
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
