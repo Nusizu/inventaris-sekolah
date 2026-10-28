@@ -30,7 +30,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('categories', CategoryController::class)->except('show');
     Route::resource('items', ItemController::class)->except('show');
-    Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store']);
+        Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
 
     Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
     Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('return-logs.create');

@@ -18,6 +18,7 @@ class ActivityLog extends Model
         'create_loan' => 'Tambah Peminjaman',
         'verify_loan' => 'Verifikasi Peminjaman',
         'return_loan' => 'Pengembalian',
+        'delete_loan' => 'Hapus Peminjaman',
         'create_user' => 'Tambah User',
         'update_user' => 'Ubah User',
         'delete_user' => 'Hapus User',

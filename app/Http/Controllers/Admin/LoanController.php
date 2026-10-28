@@ -53,4 +53,20 @@ class LoanController extends Controller
         return redirect()->route('admin.loans.index')
             ->with('success', 'Peminjaman berhasil ditambahkan dan stok barang diperbarui.');
     }
+
+    public function destroy(Loan $loan, LoanService $service)
+    {
+        $loan->load(['user', 'item']);
+        $description = "Menghapus data peminjaman {$loan->item->name} oleh {$loan->user->name}";
+
+        $stockRestored = $service->deleteLoan($loan);
+
+        ActivityLogger::log(
+            'delete_loan',
+            $description . ($stockRestored ? ' (stok barang dikembalikan)' : '')
+        );
+
+        return redirect()->route('admin.loans.index')
+            ->with('success', 'Data peminjaman berhasil dihapus.' . ($stockRestored ? ' Stok barang dikembalikan.' : ''));
+    }
 }

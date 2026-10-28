@@ -58,6 +58,10 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse ($loans as $loan)
+                                @php
+                                    $confirmText = 'Hapus data peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name . '?'
+                                        . ($loan->status !== 'dikembalikan' ? ' Stok barang akan dikembalikan.' : '');
+                                @endphp
                                 <tr>
                                     <td class="px-4 py-3">{{ $loans->firstItem() + $loop->index }}</td>
                                     <td class="px-4 py-3">{{ $loan->user->name }}</td>
@@ -67,12 +71,21 @@
                                     <td class="px-4 py-3">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3"><x-loan-status-badge :status="$loan->status" /></td>
                                     <td class="px-4 py-3">
-                                        @if ($loan->status !== 'dikembalikan')
-                                            <a href="{{ route('admin.return-logs.create', $loan) }}"
-                                               class="text-indigo-600 hover:underline">Kembalikan</a>
-                                        @else
-                                            <span class="text-gray-400">Selesai</span>
-                                        @endif
+                                        <div class="flex items-center gap-3">
+                                            @if ($loan->status !== 'dikembalikan')
+                                                <a href="{{ route('admin.return-logs.create', $loan) }}"
+                                                   class="text-indigo-600 hover:underline">Kembalikan</a>
+                                            @else
+                                                <span class="text-gray-400">Selesai</span>
+                                            @endif
+
+                                            <form method="POST" action="{{ route('admin.loans.destroy', $loan) }}"
+                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from($confirmText) }})">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

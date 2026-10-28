@@ -70,4 +70,27 @@ class LoanService
             return $returnLog->load(['loan.user', 'loan.item']);
         });
     }
+
+    public function deleteLoan(Loan $loan): bool
+    {
+        return DB::transaction(function () use ($loan) {
+            $loan = Loan::lockForUpdate()->findOrFail($loan->id);
+            $stockRestored = false;
+
+            // Peminjaman yang belum dikembalikan: stok barang dikembalikan
+            if ($loan->status !== 'dikembalikan') {
+                Item::withTrashed()->lockForUpdate()
+                    ->findOrFail($loan->item_id)
+                    ->increment('stock', $loan->quantity);
+
+                $stockRestored = true;
+            }
+
+            // Catatan pengembalian (jika ada) ikut di-soft-delete
+            $loan->returnLog?->delete();
+            $loan->delete();
+
+            return $stockRestored;
+        });
+    }
 }
