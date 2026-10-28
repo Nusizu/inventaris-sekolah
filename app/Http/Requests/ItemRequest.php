@@ -24,7 +24,7 @@ class ItemRequest extends FormRequest
                 'max:50',
                 Rule::unique('items', 'code')->ignore($this->route('item')),
             ],
-            'stock' => ['required', 'integer', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'condition' => ['required', Rule::in(Item::CONDITIONS)],
         ];
     }
@@ -53,6 +53,7 @@ class ItemRequest extends FormRequest
             'stock.required' => 'Stok wajib diisi.',
             'stock.integer' => 'Stok harus berupa angka bulat.',
             'stock.min' => 'Stok tidak boleh kurang dari 0.',
+            'stock.max' => 'Stok maksimal 1.000.000.',
             'condition.required' => 'Kondisi wajib dipilih.',
             'condition.in' => 'Kondisi yang dipilih tidak valid.',
         ];

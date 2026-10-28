@@ -89,7 +89,7 @@
                                         <div class="flex items-center gap-3">
                                             <a href="{{ route('admin.items.edit', $item) }}" class="text-indigo-600 hover:underline">Edit</a>
                                             <form method="POST" action="{{ route('admin.items.destroy', $item) }}"
-                                                  onsubmit="return confirm('Hapus barang {{ $item->name }}?')">
+                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from('Hapus barang ' . $item->name . '?') }})">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:underline">Hapus</button>

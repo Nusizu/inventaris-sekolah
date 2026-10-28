@@ -57,7 +57,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if ($category->items()->withTrashed()->exists()) {
-            return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki barang.');
+            return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki barang (termasuk barang yang sudah dihapus).');
         }
 
         $name = $category->name;

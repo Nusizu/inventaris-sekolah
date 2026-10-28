@@ -74,7 +74,7 @@
                                             <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:underline">Edit</a>
                                             @unless ($isSelf)
                                                 <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                                      onsubmit="return confirm('Hapus user {{ $user->name }}?')">
+                                                      onsubmit="return confirm({{ \Illuminate\Support\Js::from('Hapus user ' . $user->name . '?') }})">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:underline">Hapus</button>

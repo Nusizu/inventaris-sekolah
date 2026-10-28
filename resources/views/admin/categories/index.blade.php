@@ -66,7 +66,7 @@
                                         <div class="flex items-center gap-3">
                                             <a href="{{ route('admin.categories.edit', $category) }}" class="text-indigo-600 hover:underline">Edit</a>
                                             <form method="POST" action="{{ route('admin.categories.destroy', $category) }}"
-                                                  onsubmit="return confirm('Hapus kategori {{ $category->name }}?')">
+                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from('Hapus kategori ' . $category->name . '?') }})">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:underline">Hapus</button>
