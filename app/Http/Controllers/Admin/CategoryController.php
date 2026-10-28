@@ -14,6 +14,8 @@ class CategoryController extends Controller
     {
         $categories = Category::withCount('items')
             ->when($request->q, fn ($query, $search) => $query->where('name', 'like', "%{$search}%"))
+            ->when($request->usage === 'terpakai', fn ($query) => $query->has('items'))
+            ->when($request->usage === 'kosong', fn ($query) => $query->doesntHave('items'))
             ->orderBy('name')
             ->paginate(10)
             ->withQueryString();

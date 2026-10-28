@@ -14,7 +14,7 @@
 
             <div class="bg-white p-6 shadow-sm sm:rounded-lg">
                 <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <form method="GET" action="{{ route('admin.categories.index') }}" class="flex gap-2">
+                    <form method="GET" action="{{ route('admin.categories.index') }}" class="flex flex-wrap gap-2">
                         <input
                             type="text"
                             name="q"
@@ -23,8 +23,17 @@
                             autofocus
                             class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                        <x-secondary-button type="submit">Cari</x-secondary-button>
-                        @if (request('q'))
+
+                        <select name="usage"
+                                class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Semua Kategori</option>
+                            <option value="terpakai" @selected(request('usage') === 'terpakai')>Memiliki barang</option>
+                            <option value="kosong" @selected(request('usage') === 'kosong')>Belum ada barang</option>
+                        </select>
+
+                        <x-secondary-button type="submit">Filter</x-secondary-button>
+
+                        @if (request()->hasAny(['q', 'usage']))
                             <a href="{{ route('admin.categories.index') }}" class="self-center text-sm text-gray-600 hover:text-gray-900">Reset</a>
                         @endif
                     </form>
