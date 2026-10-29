@@ -43,7 +43,8 @@ class LoanController extends Controller
 
         ActivityLogger::log(
             'create_loan',
-            "Mengajukan peminjaman {$loan->item->name} sebanyak {$loan->quantity}"
+            'Mengajukan peminjaman ' . $loan->item->name . ' sebanyak '
+                . number_format($loan->quantity, 0, ',', '.')
         );
 
         return redirect()->route('user.loans.index')

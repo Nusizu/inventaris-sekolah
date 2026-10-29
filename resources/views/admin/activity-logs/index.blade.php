@@ -41,14 +41,14 @@
 
                     <div>
                         <label for="date_from" class="block text-xs text-gray-500">Dari tanggal</label>
-                        <input type="date" id="date_from" name="date_from" value="{{ request('date_from') }}"
-                               class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" id="date_from" name="date_from" value="{{ request('date_from') }}"
+                               placeholder="Pilih tanggal" class="js-date-filter">
                     </div>
 
                     <div>
                         <label for="date_to" class="block text-xs text-gray-500">Sampai tanggal</label>
-                        <input type="date" id="date_to" name="date_to" value="{{ request('date_to') }}"
-                               class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" id="date_to" name="date_to" value="{{ request('date_to') }}"
+                               placeholder="Pilih tanggal" class="js-date-filter">
                     </div>
 
                     <x-secondary-button type="submit">Filter</x-secondary-button>

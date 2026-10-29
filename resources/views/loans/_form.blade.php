@@ -47,8 +47,9 @@
             <x-input-label for="loan_date">
                 Tanggal Pinjam <span class="text-red-600">*</span>
             </x-input-label>
-            <x-text-input id="loan_date" name="loan_date" type="date" class="mt-1 block w-full"
-                :value="old('loan_date', now()->toDateString())" required />
+            <x-text-input id="loan_date" name="loan_date" type="text" class="js-date"
+                :value="old('loan_date', now()->toDateString())" placeholder="Pilih tanggal"
+                data-min-date="today" required />
             <x-input-error :messages="$errors->get('loan_date')" class="mt-2" />
         </div>
 
@@ -56,8 +57,9 @@
             <x-input-label for="due_date">
                 Tanggal Jatuh Tempo <span class="text-red-600">*</span>
             </x-input-label>
-            <x-text-input id="due_date" name="due_date" type="date" class="mt-1 block w-full"
-                :value="old('due_date', now()->addDays(7)->toDateString())" required />
+            <x-text-input id="due_date" name="due_date" type="text" class="js-date"
+                :value="old('due_date', now()->addDays(7)->toDateString())" placeholder="Pilih tanggal"
+                data-min-date="today" required />
             <x-input-error :messages="$errors->get('due_date')" class="mt-2" />
         </div>
     </div>
