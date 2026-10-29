@@ -50,9 +50,9 @@
                             <x-input-label for="returned_at">
                                 Tanggal Kembali <span class="text-red-600">*</span>
                             </x-input-label>
-                            <x-text-input id="returned_at" name="returned_at" type="date" class="mt-1 block w-full"
-                                :value="old('returned_at', now()->toDateString())"
-                                :max="now()->toDateString()" required autofocus />
+                            <x-text-input id="returned_at" name="returned_at" type="text" class="js-date"
+                                :value="old('returned_at', now()->toDateString())" placeholder="Pilih tanggal"
+                                data-max-date="today" required autofocus />
                             <x-input-error :messages="$errors->get('returned_at')" class="mt-2" />
                         </div>
 

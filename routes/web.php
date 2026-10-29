@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return redirect()->route(auth()->user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware('auth')->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,7 +30,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('categories', CategoryController::class)->except('show');
     Route::resource('items', ItemController::class)->except('show');
-        Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
 
     Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
     Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('return-logs.create');
