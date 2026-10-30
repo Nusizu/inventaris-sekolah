@@ -40,7 +40,7 @@ class ReturnLogController extends Controller
 
         $loan->load(['user', 'item']);
 
-        return view('admin.return-logs.create', compact('loan'));
+        return view('admin.loans.return.create', compact('loan'));
     }
 
     public function store(ReturnLogRequest $request, Loan $loan, LoanService $service)

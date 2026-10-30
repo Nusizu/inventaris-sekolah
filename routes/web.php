@@ -13,8 +13,10 @@ use App\Http\Controllers\User\LoanController as UserLoanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('home');
 
 Route::get('/dashboard', function () {
     return redirect()->route(auth()->user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard');
@@ -30,11 +32,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('categories', CategoryController::class)->except('show');
     Route::resource('items', ItemController::class)->except('show');
+
     Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('loans.return.create');
+    Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('loans.return.store');
 
     Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
-    Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('return-logs.create');
-    Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('return-logs.store');
 
     Route::resource('users', UserController::class)->except('show');
 

@@ -73,7 +73,7 @@
                                     <td class="px-4 py-3">
                                         <div class="flex items-center gap-3">
                                             @if ($loan->status !== 'dikembalikan')
-                                                <a href="{{ route('admin.return-logs.create', $loan) }}"
+                                                <a href="{{ route('admin.loans.return.create', $loan) }}"
                                                    class="text-indigo-600 hover:underline">Kembalikan</a>
                                             @else
                                                 <span class="text-gray-400">Selesai</span>

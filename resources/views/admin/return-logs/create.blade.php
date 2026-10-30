@@ -42,7 +42,7 @@
             </div>
 
             <div class="bg-white p-6 shadow-sm sm:rounded-lg">
-                <form method="POST" action="{{ route('admin.return-logs.store', $loan) }}">
+                <form method="POST" action="{{ route('admin.loans.return.store', $loan) }}">
                     @csrf
 
                     <div class="space-y-5">
