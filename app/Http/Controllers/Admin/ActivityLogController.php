@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
+        $dateFrom = $this->parseDate($request->date_from);
+        $dateTo = $this->parseDate($request->date_to);
+
         $logs = ActivityLog::with('user')
             ->when($request->q, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -20,8 +24,8 @@ class ActivityLogController extends Controller
             })
             ->when($request->action, fn ($query, $action) => $query->where('action', $action))
             ->when($request->user_id, fn ($query, $userId) => $query->where('user_id', $userId))
-            ->when($request->date_from, fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
-            ->when($request->date_to, fn ($query, $date) => $query->whereDate('created_at', '<=', $date))
+            ->when($dateFrom, fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
+            ->when($dateTo, fn ($query, $date) => $query->whereDate('created_at', '<=', $date))
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->paginate(10)
@@ -31,5 +35,21 @@ class ActivityLogController extends Controller
         $users = User::orderBy('name')->get(['id', 'name']);
 
         return view('admin.activity-logs.index', compact('logs', 'actions', 'users'));
+    }
+
+    /**
+     * Ubah input tanggal menjadi format Y-m-d, atau null jika tidak valid.
+     */
+    private function parseDate(mixed $value): ?string
+    {
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        try {
+            return Carbon::createFromFormat('Y-m-d', $value)->toDateString();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }
