@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ReturnLogController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\ItemController as UserItemController;
 use App\Http\Controllers\User\LoanController as UserLoanController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('items', [UserItemController::class, 'index'])->name('items.index');
     Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
 });
 

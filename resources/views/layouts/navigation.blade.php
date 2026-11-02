@@ -42,6 +42,10 @@
                             {{ __('Activity Log') }}
                         </x-nav-link>
                     @else
+                        <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
+                            {{ __('Daftar Barang') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
                             {{ __('Peminjaman Saya') }}
                         </x-nav-link>
@@ -128,6 +132,10 @@
                     {{ __('Activity Log') }}
                 </x-responsive-nav-link>
             @else
+                <x-responsive-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
+                    {{ __('Daftar Barang') }}
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
                     {{ __('Peminjaman Saya') }}
                 </x-responsive-nav-link>
