@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Kolom pencarian cukup lebar agar placeholder terbaca */
+input[name="q"] {
+    min-width: 16rem;
+}

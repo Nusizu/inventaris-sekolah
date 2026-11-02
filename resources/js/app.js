@@ -40,3 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
             'rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
     });
 });
+
+// Cegah klik ganda pada tombol submit (supaya data tidak tersimpan dua kali)
+document.addEventListener('submit', (event) => {
+    const form = event.target;
+
+    // Dibatalkan oleh handler lain, misalnya dialog konfirmasi Hapus ditolak
+    if (event.defaultPrevented) {
+        return;
+    }
+
+    // Form sudah dikirim, abaikan pengiriman kedua
+    if (form.dataset.submitted === 'true') {
+        event.preventDefault();
+        return;
+    }
+
+    form.dataset.submitted = 'true';
+    form.querySelectorAll('button[type="submit"]').forEach((button) => {
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+    });
+});
+
+// Saat pengguna menekan tombol Back, form dikembalikan ke keadaan normal
+window.addEventListener('pageshow', () => {
+    document.querySelectorAll('form[data-submitted]').forEach((form) => {
+        delete form.dataset.submitted;
+        form.querySelectorAll('button[type="submit"]').forEach((button) => {
+            button.classList.remove('opacity-50', 'cursor-not-allowed');
+        });
+    });
+});
