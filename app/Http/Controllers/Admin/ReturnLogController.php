@@ -33,9 +33,9 @@ class ReturnLogController extends Controller
 
     public function create(Loan $loan)
     {
-        if ($loan->status === 'dikembalikan' || $loan->returnLog()->withTrashed()->exists()) {
+        if (! $loan->isActive() || $loan->returnLog()->withTrashed()->exists()) {
             return redirect()->route('admin.loans.index')
-                ->with('error', 'Peminjaman ini sudah dikembalikan.');
+                ->with('error', 'Peminjaman ini tidak dapat dikembalikan.');
         }
 
         $loan->load(['user', 'item']);

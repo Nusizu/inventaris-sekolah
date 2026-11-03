@@ -20,6 +20,7 @@ class DashboardController extends Controller
             ->pluck('total', 'status');
 
         $stats = [
+            'pending' => (int) ($counts['menunggu'] ?? 0),
             'borrowed' => (int) ($counts['dipinjam'] ?? 0),
             'overdue' => (int) ($counts['terlambat'] ?? 0),
             'returned' => (int) ($counts['dikembalikan'] ?? 0),

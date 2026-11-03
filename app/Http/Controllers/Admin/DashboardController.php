@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $stats = [
             'total_items' => Item::count(),
             'total_stock' => (int) Item::sum('stock'),
+            'pending' => Loan::where('status', 'menunggu')->count(),
             'borrowed' => Loan::where('status', 'dipinjam')->count(),
             'overdue' => Loan::where('status', 'terlambat')->count(),
         ];

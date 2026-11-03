@@ -68,11 +68,11 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         $hasActiveLoan = $item->loans()
-            ->whereIn('status', ['dipinjam', 'terlambat'])
+            ->whereIn('status', ['menunggu', 'dipinjam', 'terlambat'])
             ->exists();
 
         if ($hasActiveLoan) {
-            return back()->with('error', 'Barang tidak dapat dihapus karena masih sedang dipinjam.');
+            return back()->with('error', 'Barang tidak dapat dihapus karena masih memiliki peminjaman aktif atau pengajuan yang menunggu.');
         }
 
         $item->delete(); // soft delete

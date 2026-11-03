@@ -22,6 +22,10 @@ class ActivityLog extends Model
         'create_user' => 'Tambah User',
         'update_user' => 'Ubah User',
         'delete_user' => 'Hapus User',
+        'request_loan' => 'Pengajuan Peminjaman',
+        'approve_loan' => 'Setujui Peminjaman',
+        'reject_loan' => 'Tolak Peminjaman',
+        'cancel_loan' => 'Batalkan Pengajuan',
     ];
 
     protected $fillable = ['user_id', 'action', 'description'];

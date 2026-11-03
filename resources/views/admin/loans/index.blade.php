@@ -22,7 +22,7 @@
                         <select name="status"
                                 class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Semua Status</option>
-                            @foreach (['dipinjam', 'dikembalikan', 'terlambat'] as $status)
+                            @foreach (\App\Models\Loan::STATUSES as $status)
                                 <option value="{{ $status }}" @selected(request('status') === $status)>
                                     {{ ucfirst($status) }}
                                 </option>
@@ -59,8 +59,9 @@
                         <tbody class="divide-y divide-gray-100">
                             @forelse ($loans as $loan)
                                 @php
-                                    $confirmText = 'Hapus data peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name . '?'
-                                        . ($loan->status !== 'dikembalikan' ? ' Stok barang akan dikembalikan.' : '');
+                                    $confirmDelete = 'Hapus data peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name . '?'
+                                        . ($loan->isActive() ? ' Stok barang akan dikembalikan.' : '');
+                                    $confirmApprove = 'Setujui peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name . '?';
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-3">{{ $loans->firstItem() + $loop->index }}</td>
@@ -71,16 +72,26 @@
                                     <td class="px-4 py-3">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3"><x-loan-status-badge :status="$loan->status" /></td>
                                     <td class="px-4 py-3">
-                                        <div class="flex items-center gap-3">
-                                            @if ($loan->status !== 'dikembalikan')
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            @if ($loan->status === 'menunggu')
+                                                <form method="POST" action="{{ route('admin.loans.approve', $loan) }}"
+                                                      onsubmit="return confirm({{ \Illuminate\Support\Js::from($confirmApprove) }})">
+                                                    @csrf
+                                                    <button type="submit" class="text-green-700 hover:underline">Setujui</button>
+                                                </form>
+                                                <a href="{{ route('admin.loans.reject.create', $loan) }}"
+                                                   class="text-orange-600 hover:underline">Tolak</a>
+                                            @elseif ($loan->isActive())
                                                 <a href="{{ route('admin.loans.return.create', $loan) }}"
                                                    class="text-indigo-600 hover:underline">Kembalikan</a>
-                                            @else
+                                            @elseif ($loan->status === 'dikembalikan')
                                                 <span class="text-gray-400">Selesai</span>
+                                            @else
+                                                <span class="text-gray-400">-</span>
                                             @endif
 
                                             <form method="POST" action="{{ route('admin.loans.destroy', $loan) }}"
-                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from($confirmText) }})">
+                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from($confirmDelete) }})">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:underline">Hapus</button>

@@ -16,7 +16,11 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                <x-stat-card label="Menunggu Persetujuan"
+                             :value="number_format($stats['pending'], 0, ',', '.')"
+                             color="purple" :href="route('user.loans.index', ['status' => 'menunggu'])" />
+
                 <x-stat-card label="Sedang Dipinjam"
                              :value="number_format($stats['borrowed'], 0, ',', '.')"
                              color="yellow" :href="route('user.loans.index', ['status' => 'dipinjam'])" />
@@ -29,7 +33,7 @@
                              :value="number_format($stats['returned'], 0, ',', '.')"
                              color="green" :href="route('user.loans.index', ['status' => 'dikembalikan'])" />
 
-                <x-stat-card label="Total Peminjaman"
+                <x-stat-card label="Total Pengajuan"
                              :value="number_format($stats['total'], 0, ',', '.')"
                              color="blue" :href="route('user.loans.index')" />
             </div>

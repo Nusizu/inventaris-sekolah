@@ -35,6 +35,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('items', ItemController::class)->except('show');
 
     Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::post('loans/{loan}/approve', [AdminLoanController::class, 'approve'])->name('loans.approve');
+    Route::get('loans/{loan}/reject', [AdminLoanController::class, 'rejectCreate'])->name('loans.reject.create');
+    Route::post('loans/{loan}/reject', [AdminLoanController::class, 'rejectStore'])->name('loans.reject.store');
     Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('loans.return.create');
     Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('loans.return.store');
 
@@ -50,6 +53,7 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
 
     Route::get('items', [UserItemController::class, 'index'])->name('items.index');
     Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
+    Route::patch('loans/{loan}/cancel', [UserLoanController::class, 'cancel'])->name('loans.cancel');
 });
 
 require __DIR__ . '/auth.php';

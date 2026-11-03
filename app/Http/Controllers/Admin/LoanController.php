@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoanRequest;
+use App\Http\Requests\RejectLoanRequest;
 use App\Models\Item;
 use App\Models\Loan;
 use App\Models\User;
 use App\Services\ActivityLogger;
 use App\Services\LoanService;
+use DomainException;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -53,6 +55,52 @@ class LoanController extends Controller
 
         return redirect()->route('admin.loans.index')
             ->with('success', 'Peminjaman berhasil ditambahkan dan stok barang diperbarui.');
+    }
+
+    public function approve(Request $request, Loan $loan, LoanService $service)
+    {
+        try {
+            $loan = $service->approve($loan, $request->user());
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        ActivityLogger::log(
+            'approve_loan',
+            'Menyetujui peminjaman ' . $loan->item->name . ' sebanyak '
+                . number_format($loan->quantity, 0, ',', '.') . ' oleh ' . $loan->user->name
+        );
+
+        return back()->with('success', 'Pengajuan disetujui dan stok barang diperbarui.');
+    }
+
+    public function rejectCreate(Loan $loan)
+    {
+        if ($loan->status !== 'menunggu') {
+            return redirect()->route('admin.loans.index')
+                ->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
+
+        $loan->load(['user', 'item']);
+
+        return view('admin.loans.reject', compact('loan'));
+    }
+
+    public function rejectStore(RejectLoanRequest $request, Loan $loan, LoanService $service)
+    {
+        try {
+            $loan = $service->reject($loan, $request->user(), $request->validated('decision_note'));
+        } catch (DomainException $e) {
+            return redirect()->route('admin.loans.index')->with('error', $e->getMessage());
+        }
+
+        ActivityLogger::log(
+            'reject_loan',
+            'Menolak peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name
+        );
+
+        return redirect()->route('admin.loans.index')
+            ->with('success', 'Pengajuan ditolak.');
     }
 
     public function destroy(Loan $loan, LoanService $service)

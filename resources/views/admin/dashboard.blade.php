@@ -9,7 +9,7 @@
 
             <p class="text-sm text-gray-600">Selamat datang, {{ auth()->user()->name }}.</p>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
                 <x-stat-card label="Total Barang"
                              :value="number_format($stats['total_items'], 0, ',', '.')"
                              color="blue" :href="route('admin.items.index')" />
@@ -17,6 +17,10 @@
                 <x-stat-card label="Total Stok"
                              :value="number_format($stats['total_stock'], 0, ',', '.')"
                              color="green" :href="route('admin.items.index')" />
+
+                <x-stat-card label="Menunggu Persetujuan"
+                             :value="number_format($stats['pending'], 0, ',', '.')"
+                             color="purple" :href="route('admin.loans.index', ['status' => 'menunggu'])" />
 
                 <x-stat-card label="Sedang Dipinjam"
                              :value="number_format($stats['borrowed'], 0, ',', '.')"

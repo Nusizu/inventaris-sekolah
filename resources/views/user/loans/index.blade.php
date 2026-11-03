@@ -22,7 +22,7 @@
                         <select name="status"
                                 class="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Semua Status</option>
-                            @foreach (['dipinjam', 'dikembalikan', 'terlambat'] as $status)
+                            @foreach (\App\Models\Loan::STATUSES as $status)
                                 <option value="{{ $status }}" @selected(request('status') === $status)>
                                     {{ ucfirst($status) }}
                                 </option>
@@ -52,6 +52,8 @@
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Tanggal Pinjam</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Jatuh Tempo</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Keterangan</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -63,10 +65,31 @@
                                     <td class="px-4 py-3">{{ $loan->loan_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
                                     <td class="px-4 py-3"><x-loan-status-badge :status="$loan->status" /></td>
+                                    <td class="px-4 py-3">
+                                        @if ($loan->status === 'ditolak' && $loan->decision_note)
+                                            <span class="text-rose-700">{{ $loan->decision_note }}</span>
+                                        @elseif ($loan->status === 'menunggu')
+                                            <span class="text-gray-500">Menunggu persetujuan Admin</span>
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        @if ($loan->status === 'menunggu')
+                                            <form method="POST" action="{{ route('user.loans.cancel', $loan) }}"
+                                                  onsubmit="return confirm({{ \Illuminate\Support\Js::from('Batalkan pengajuan peminjaman ' . $loan->item->name . '?') }})">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="text-red-600 hover:underline">Batalkan</button>
+                                            </form>
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-6 text-center text-gray-500">Belum ada riwayat peminjaman.</td>
+                                    <td colspan="8" class="px-4 py-6 text-center text-gray-500">Belum ada riwayat peminjaman.</td>
                                 </tr>
                             @endforelse
                         </tbody>

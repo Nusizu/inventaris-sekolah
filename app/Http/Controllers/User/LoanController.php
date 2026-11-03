@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Loan;
 use App\Services\ActivityLogger;
 use App\Services\LoanService;
+use DomainException;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -39,15 +40,36 @@ class LoanController extends Controller
 
     public function store(LoanRequest $request, LoanService $service)
     {
-        $loan = $service->create($request->validated() + ['user_id' => $request->user()->id]);
+        $loan = $service->request($request->validated() + ['user_id' => $request->user()->id]);
 
         ActivityLogger::log(
-            'create_loan',
+            'request_loan',
             'Mengajukan peminjaman ' . $loan->item->name . ' sebanyak '
                 . number_format($loan->quantity, 0, ',', '.')
         );
 
         return redirect()->route('user.loans.index')
-            ->with('success', 'Peminjaman berhasil diajukan.');
+            ->with('success', 'Pengajuan peminjaman berhasil dikirim dan menunggu persetujuan Admin.');
+    }
+
+    public function cancel(Request $request, Loan $loan, LoanService $service)
+    {
+        // Pengajuan milik orang lain tidak boleh disentuh
+        abort_unless($loan->user_id === $request->user()->id, 403);
+
+        try {
+            $loan = $service->cancel($loan);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        ActivityLogger::log(
+            'cancel_loan',
+            'Membatalkan pengajuan peminjaman ' . $loan->item->name . ' sebanyak '
+                . number_format($loan->quantity, 0, ',', '.')
+        );
+
+        return redirect()->route('user.loans.index')
+            ->with('success', 'Pengajuan peminjaman dibatalkan.');
     }
 }

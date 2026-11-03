@@ -5,6 +5,7 @@
         'green' => 'border-green-500',
         'yellow' => 'border-yellow-500',
         'red' => 'border-red-500',
+        'purple' => 'border-purple-500',
         default => 'border-blue-500',
     };
 
@@ -12,6 +13,7 @@
         'green' => 'text-green-600',
         'yellow' => 'text-yellow-600',
         'red' => 'text-red-600',
+        'purple' => 'text-purple-600',
         default => 'text-blue-600',
     };
 @endphp
