@@ -7,6 +7,7 @@ use App\Http\Requests\LoanRequest;
 use App\Models\Item;
 use App\Models\Loan;
 use App\Services\ActivityLogger;
+use App\Services\LoanNotifier;
 use App\Services\LoanService;
 use DomainException;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ class LoanController extends Controller
             'Mengajukan peminjaman ' . $loan->item->name . ' sebanyak '
                 . number_format($loan->quantity, 0, ',', '.')
         );
+        LoanNotifier::requested($loan);
 
         return redirect()->route('user.loans.index')
             ->with('success', 'Pengajuan peminjaman berhasil dikirim dan menunggu persetujuan Admin.');

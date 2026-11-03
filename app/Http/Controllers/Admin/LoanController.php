@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\Loan;
 use App\Models\User;
 use App\Services\ActivityLogger;
+use App\Services\LoanNotifier;
 use App\Services\LoanService;
 use DomainException;
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class LoanController extends Controller
             'Menyetujui peminjaman ' . $loan->item->name . ' sebanyak '
                 . number_format($loan->quantity, 0, ',', '.') . ' oleh ' . $loan->user->name
         );
-
+        LoanNotifier::approved($loan);
         return back()->with('success', 'Pengajuan disetujui dan stok barang diperbarui.');
     }
 
@@ -98,7 +99,7 @@ class LoanController extends Controller
             'reject_loan',
             'Menolak peminjaman ' . $loan->item->name . ' oleh ' . $loan->user->name
         );
-
+        LoanNotifier::rejected($loan);
         return redirect()->route('admin.loans.index')
             ->with('success', 'Pengajuan ditolak.');
     }

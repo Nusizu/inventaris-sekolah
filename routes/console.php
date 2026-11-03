@@ -6,3 +6,4 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+\Illuminate\Support\Facades\Schedule::command('loans:send-reminders')->dailyAt('07:00');

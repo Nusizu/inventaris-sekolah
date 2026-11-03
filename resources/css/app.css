@@ -5,3 +5,6 @@
 input[name="q"] {
     min-width: 16rem;
 }
+[x-cloak] {
+    display: none !important;
+}
