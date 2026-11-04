@@ -13,6 +13,7 @@ use App\Http\Controllers\User\ItemController as UserItemController;
 use App\Http\Controllers\User\LoanController as UserLoanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', function () {
     return auth()->check()
@@ -51,6 +52,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('users', UserController::class)->except('show');
 
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    
+    Route::get('reports/loans', [ReportController::class, 'loans'])->name('reports.loans');
+    Route::get('reports/loans/pdf', [ReportController::class, 'loansPdf'])->name('reports.loans.pdf');
+    Route::get('reports/loans/excel', [ReportController::class, 'loansExcel'])->name('reports.loans.excel');
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {

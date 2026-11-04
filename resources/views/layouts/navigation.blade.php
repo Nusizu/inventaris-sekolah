@@ -41,6 +41,9 @@
                         <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
                             {{ __('Activity Log') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
+                            {{ __('Laporan') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
                             {{ __('Daftar Barang') }}
@@ -135,6 +138,10 @@
 
                 <x-responsive-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
                     {{ __('Activity Log') }}
+                </x-responsive-nav-link>
+                
+                <x-responsive-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
+                    {{ __('Laporan') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
