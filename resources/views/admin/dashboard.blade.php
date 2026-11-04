@@ -31,6 +31,41 @@
                              color="red" :href="route('admin.loans.index', ['status' => 'terlambat'])" />
             </div>
 
+            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+                <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h3 class="text-sm font-semibold text-indigo-700">Tren Peminjaman per Bulan</h3>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Berdasarkan tanggal pinjam. Pengajuan yang menunggu, ditolak, atau dibatalkan tidak dihitung.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <div class="inline-flex overflow-hidden rounded-md border border-gray-300 text-xs font-medium">
+                            <button type="button" data-chart-range="6"
+                                    class="bg-white px-3 py-1.5 text-gray-700">6 bulan</button>
+                            <button type="button" data-chart-range="12"
+                                    class="border-l border-gray-300 bg-white px-3 py-1.5 text-gray-700">12 bulan</button>
+                        </div>
+
+                        <div class="inline-flex overflow-hidden rounded-md border border-gray-300 text-xs font-medium">
+                            <button type="button" data-chart-metric="count"
+                                    class="bg-white px-3 py-1.5 text-gray-700">Jumlah peminjaman</button>
+                            <button type="button" data-chart-metric="units"
+                                    class="border-l border-gray-300 bg-white px-3 py-1.5 text-gray-700">Jumlah unit</button>
+                        </div>
+                    </div>
+                </div>
+
+                @if ($hasTrendData)
+                    <div class="relative h-72">
+                        <canvas id="loanTrendChart" data-trend='@json($trend)'></canvas>
+                    </div>
+                @else
+                    <p class="py-10 text-center text-sm text-gray-500">Belum ada data peminjaman untuk ditampilkan.</p>
+                @endif
+            </div>
+
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div class="bg-white shadow-sm sm:rounded-lg">
                     <div class="border-b border-gray-100 px-6 py-4">

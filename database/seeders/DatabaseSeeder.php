@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             LoanSeeder::class,
             ReturnLogSeeder::class,
             ActivityLogSeeder::class,
+            LoanHistorySeeder::class,
         ]);
     }
 }

@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
         altInputClass:
             'rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
     });
+
+    // Grafik tren peminjaman: dimuat hanya di halaman yang memilikinya
+    const trendCanvas = document.getElementById('loanTrendChart');
+
+    if (trendCanvas) {
+        import('./loan-trend-chart').then((module) => module.default(trendCanvas));
+    }
 });
 
 // Cegah klik ganda pada tombol submit (supaya data tidak tersimpan dua kali)
