@@ -19,7 +19,7 @@ class SecurityHeaders
         // Membatasi informasi asal halaman yang dikirim ke situs lain
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         // Mematikan akses fitur perangkat yang tidak dipakai
-        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+                $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
 
         return $response;
     }

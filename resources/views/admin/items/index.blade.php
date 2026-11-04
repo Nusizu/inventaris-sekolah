@@ -46,10 +46,17 @@
                         @endif
                     </form>
 
-                    <a href="{{ route('admin.items.create') }}"
-                       class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
-                        + Tambah Barang
-                    </a>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('admin.items.labels', request()->only(['q', 'category_id'])) }}"
+                           target="_blank" rel="noopener"
+                           class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 hover:bg-gray-50">
+                            Cetak Label QR
+                        </a>
+                        <a href="{{ route('admin.items.create') }}"
+                           class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                            + Tambah Barang
+                        </a>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -86,7 +93,10 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-3">
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-3 whitespace-nowrap">
+                                            <a href="{{ route('admin.items.labels', ['ids' => [$item->id]]) }}"
+                                               target="_blank" rel="noopener"
+                                               class="text-gray-600 hover:underline">Label QR</a>
                                             <a href="{{ route('admin.items.edit', $item) }}" class="text-indigo-600 hover:underline">Edit</a>
                                             <form method="POST" action="{{ route('admin.items.destroy', $item) }}"
                                                   onsubmit="return confirm({{ \Illuminate\Support\Js::from('Hapus barang ' . $item->name . '?') }})">

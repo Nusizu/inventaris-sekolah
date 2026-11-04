@@ -14,6 +14,9 @@ use App\Http\Controllers\User\LoanController as UserLoanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ItemLabelController;
+use App\Http\Controllers\Admin\ScanController as AdminScanController;
+use App\Http\Controllers\User\ScanController as UserScanController;
 
 Route::get('/', function () {
     return auth()->check()
@@ -56,6 +59,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('reports/loans', [ReportController::class, 'loans'])->name('reports.loans');
     Route::get('reports/loans/pdf', [ReportController::class, 'loansPdf'])->name('reports.loans.pdf');
     Route::get('reports/loans/excel', [ReportController::class, 'loansExcel'])->name('reports.loans.excel');
+
+    Route::get('items/labels', [ItemLabelController::class, 'index'])->name('items.labels');
+    Route::get('scan', [AdminScanController::class, 'index'])->name('scan');
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
@@ -64,6 +70,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
     Route::get('items', [UserItemController::class, 'index'])->name('items.index');
     Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
     Route::patch('loans/{loan}/cancel', [UserLoanController::class, 'cancel'])->name('loans.cancel');
+
+    Route::get('scan', [UserScanController::class, 'index'])->name('scan');
 });
 
 require __DIR__ . '/auth.php';

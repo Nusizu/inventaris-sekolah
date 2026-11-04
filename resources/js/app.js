@@ -46,6 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trendCanvas) {
         import('./loan-trend-chart').then((module) => module.default(trendCanvas));
     }
+
+    // Pemindai QR Code: dimuat hanya di halaman pindai
+    const qrReader = document.getElementById('qr-reader');
+
+    if (qrReader) {
+        import('./qr-scanner').then((module) => module.default(qrReader));
+    }
 });
 
 // Cegah klik ganda pada tombol submit (supaya data tidak tersimpan dua kali)
