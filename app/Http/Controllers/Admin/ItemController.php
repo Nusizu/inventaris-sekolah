@@ -11,24 +11,9 @@ use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
-    public function index(Request $request)
+        public function index()
     {
-        $items = Item::with('category')
-            ->when($request->q, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('code', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->category_id, fn ($query, $id) => $query->where('category_id', $id))
-            ->when($request->condition, fn ($query, $condition) => $query->where('condition', $condition))
-            ->orderBy('name')
-            ->paginate(10)
-            ->withQueryString();
-
-        $categories = Category::orderBy('name')->get();
-
-        return view('admin.items.index', compact('items', 'categories'));
+        return view('admin.items.index');
     }
 
     public function create()

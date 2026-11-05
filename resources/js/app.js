@@ -1,13 +1,13 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+import { Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import flatpickr from 'flatpickr';
 import { Indonesian } from 'flatpickr/dist/l10n/id.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
-window.Alpine = Alpine;
-
-Alpine.start();
+// Livewire membawa Alpine.js sendiri dan menjalankannya di semua halaman.
+// Jangan memuat atau memulai Alpine kedua kali.
+Livewire.start();
 
 const baseConfig = {
     locale: Indonesian,
