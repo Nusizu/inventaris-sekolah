@@ -17,57 +17,83 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if (Auth::user()->isAdmin())
-                        <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                            {{ __('Kategori') }}
-                        </x-nav-link>
+                    @can('admin.access')
+                        @can('categories.manage')
+                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                                {{ __('Kategori') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
-                            {{ __('Barang') }}
-                        </x-nav-link>
+                        @can('items.manage')
+                            <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
+                                {{ __('Barang') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
-                            {{ __('Peminjaman') }}
-                        </x-nav-link>
+                        @can('loans.manage')
+                            <x-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
+                                {{ __('Peminjaman') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
-                            {{ __('Pengembalian') }}
-                        </x-nav-link>
+                        @can('returns.manage')
+                            <x-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
+                                {{ __('Pengembalian') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('Manajemen User') }}
-                        </x-nav-link>
+                        @can('users.manage')
+                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*', 'admin.roles.*')">
+                                {{ __('Manajemen User') }}
+                            </x-nav-link>
+                        @elsecan('roles.manage')
+                            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
+                                {{ __('Peran') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
-                            {{ __('Activity Log') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
-                            {{ __('Laporan') }}
-                        </x-nav-link>
-                    @else
-                        <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
-                            {{ __('Daftar Barang') }}
-                        </x-nav-link>
+                        @can('activity-logs.view')
+                            <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
+                                {{ __('Activity Log') }}
+                            </x-nav-link>
+                        @endcan
 
-                        <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
-                            {{ __('Peminjaman Saya') }}
-                        </x-nav-link>
-                    @endif
+                        @can('reports.view')
+                            <x-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
+                                {{ __('Laporan') }}
+                            </x-nav-link>
+                        @endcan
+                    @elsecan('user.access')
+                        @can('items.browse')
+                            <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
+                                {{ __('Daftar Barang') }}
+                            </x-nav-link>
+                        @endcan
+
+                        @can('loans.request')
+                            <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
+                                {{ __('Peminjaman Saya') }}
+                            </x-nav-link>
+                        @endcan
+                    @endcan
                 </div>
             </div>
 
-            <!-- Sisi kanan: notifikasi, pengaturan akun, hamburger -->
+            <!-- Sisi kanan: pemindai, notifikasi, pengaturan akun, hamburger -->
             <div class="flex items-center gap-1">
-                <a href="{{ route(Auth::user()->isAdmin() ? 'admin.scan' : 'user.scan') }}"
-                   class="rounded-md p-2 hover:bg-gray-100 {{ request()->routeIs('admin.scan', 'user.scan') ? 'bg-gray-100 text-gray-800' : 'text-gray-500 hover:text-gray-700' }}"
-                   aria-label="Pindai QR Code" title="Pindai QR Code">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
-                    </svg>
-                </a>
+                @can('scan.use')
+                    <a href="{{ route(Auth::user()->isAdmin() ? 'admin.scan' : 'user.scan') }}"
+                       class="rounded-md p-2 hover:bg-gray-100 {{ request()->routeIs('admin.scan', 'user.scan') ? 'bg-gray-100 text-gray-800' : 'text-gray-500 hover:text-gray-700' }}"
+                       aria-label="Pindai QR Code" title="Pindai QR Code">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                        </svg>
+                    </a>
+                @endcan
+
                 <x-notification-bell />
 
                 <!-- Settings Dropdown -->
@@ -125,43 +151,65 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            @if (Auth::user()->isAdmin())
-                <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                    {{ __('Kategori') }}
-                </x-responsive-nav-link>
+            @can('admin.access')
+                @can('categories.manage')
+                    <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                        {{ __('Kategori') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
-                    {{ __('Barang') }}
-                </x-responsive-nav-link>
+                @can('items.manage')
+                    <x-responsive-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
+                        {{ __('Barang') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
-                    {{ __('Peminjaman') }}
-                </x-responsive-nav-link>
+                @can('loans.manage')
+                    <x-responsive-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
+                        {{ __('Peminjaman') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
-                    {{ __('Pengembalian') }}
-                </x-responsive-nav-link>
+                @can('returns.manage')
+                    <x-responsive-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
+                        {{ __('Pengembalian') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                    {{ __('Manajemen User') }}
-                </x-responsive-nav-link>
+                @can('users.manage')
+                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*', 'admin.roles.*')">
+                        {{ __('Manajemen User') }}
+                    </x-responsive-nav-link>
+                @elsecan('roles.manage')
+                    <x-responsive-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
+                        {{ __('Peran') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
-                    {{ __('Activity Log') }}
-                </x-responsive-nav-link>
-                
-                <x-responsive-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
-                    {{ __('Laporan') }}
-                </x-responsive-nav-link>
-            @else
-                <x-responsive-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
-                    {{ __('Daftar Barang') }}
-                </x-responsive-nav-link>
+                @can('activity-logs.view')
+                    <x-responsive-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
+                        {{ __('Activity Log') }}
+                    </x-responsive-nav-link>
+                @endcan
 
-                <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
-                    {{ __('Peminjaman Saya') }}
-                </x-responsive-nav-link>
-            @endif
+                @can('reports.view')
+                    <x-responsive-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
+                        {{ __('Laporan') }}
+                    </x-responsive-nav-link>
+                @endcan
+            @elsecan('user.access')
+                @can('items.browse')
+                    <x-responsive-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
+                        {{ __('Daftar Barang') }}
+                    </x-responsive-nav-link>
+                @endcan
+
+                @can('loans.request')
+                    <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
+                        {{ __('Peminjaman Saya') }}
+                    </x-responsive-nav-link>
+                @endcan
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

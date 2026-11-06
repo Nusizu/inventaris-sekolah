@@ -87,6 +87,13 @@ class ItemList extends Component
 
     private function authorizeScope(): void
     {
-        abort_unless(auth()->check() && auth()->user()->role === $this->scope, 403);
+        $user = auth()->user();
+
+        $allowed = $user && match ($this->scope) {
+            'admin' => $user->can('items.manage'),
+            default => $user->can('items.browse'),
+        };
+
+        abort_unless($allowed, 403);
     }
 }

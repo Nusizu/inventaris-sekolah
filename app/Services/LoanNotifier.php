@@ -13,7 +13,7 @@ class LoanNotifier
     /** Pengajuan baru: semua Admin diberi tahu. */
     public static function requested(Loan $loan): void
     {
-        self::send(User::where('role', 'admin')->get(), new LoanAlert($loan, 'requested'));
+        self::send(User::permission('loans.manage')->get(), new LoanAlert($loan, 'requested'));
     }
 
     public static function approved(Loan $loan): void

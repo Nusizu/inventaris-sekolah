@@ -1,5 +1,6 @@
 @php
     $isSelf = isset($user) && $user->is(auth()->user());
+    $currentRole = old('role', isset($user) ? ($user->roles->first()?->name ?? '') : '');
 @endphp
 
 <div class="space-y-5">
@@ -23,23 +24,23 @@
 
     <div>
         <x-input-label for="role">
-            Role <span class="text-red-600">*</span>
+            Peran <span class="text-red-600">*</span>
         </x-input-label>
 
         @if ($isSelf)
-            <input type="hidden" name="role" value="{{ $user->role }}">
+            <input type="hidden" name="role" value="{{ $currentRole }}">
             <select id="role" disabled
                     class="mt-1 block w-full cursor-not-allowed rounded-md border-gray-300 bg-gray-100 shadow-sm">
-                <option>{{ ucfirst($user->role) }}</option>
+                <option>{{ ucfirst($currentRole) }}</option>
             </select>
-            <p class="mt-1 text-xs text-gray-500">Role akun yang sedang Anda gunakan tidak dapat diubah.</p>
+            <p class="mt-1 text-xs text-gray-500">Peran akun yang sedang Anda gunakan tidak dapat diubah.</p>
         @else
             <select id="role" name="role" required
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <option value="">-- Pilih Role --</option>
-                @foreach (['admin' => 'Admin', 'user' => 'User'] as $value => $label)
-                    <option value="{{ $value }}" @selected(old('role', $user->role ?? '') === $value)>
-                        {{ $label }}
+                <option value="">-- Pilih Peran --</option>
+                @foreach ($roles as $roleName)
+                    <option value="{{ $roleName }}" @selected($currentRole === $roleName)>
+                        {{ ucfirst($roleName) }}
                     </option>
                 @endforeach
             </select>

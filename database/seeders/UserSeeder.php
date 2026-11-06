@@ -14,6 +14,7 @@ class UserSeeder extends Seeder
             ['name' => 'Administrator', 'email' => 'admin@inventaris.test', 'role' => 'admin'],
             ['name' => 'User Satu', 'email' => 'user1@inventaris.test', 'role' => 'user'],
             ['name' => 'User Dua', 'email' => 'user2@inventaris.test', 'role' => 'user'],
+            ['name' => 'Petugas Inventaris', 'email' => 'petugas@inventaris.test', 'role' => 'admin'],
         ];
 
         foreach ($users as $user) {

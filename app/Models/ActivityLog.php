@@ -27,6 +27,9 @@ class ActivityLog extends Model
         'reject_loan' => 'Tolak Peminjaman',
         'cancel_loan' => 'Batalkan Pengajuan',
         'export_report' => 'Unduh Laporan',
+        'create_role' => 'Tambah Peran',
+        'update_role' => 'Ubah Peran',
+        'delete_role' => 'Hapus Peran',
     ];
 
     protected $fillable = ['user_id', 'action', 'description'];

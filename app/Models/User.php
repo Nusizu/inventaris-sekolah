@@ -2,70 +2,71 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-         'name',
-         'email',
-         'password',
-         'role',
+        'name',
+        'email',
+        'password',
+        'role',
     ];
 
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    public function isUser(): bool
-    {
-        return $this->role === 'user';
-    }
-
-    public function loans(): HasMany
-    {
-       return $this->hasMany(Loan::class);
-    }   
-
-    public function activityLogs(): HasMany
-    {
-       return $this->hasMany(ActivityLog::class);
-    }
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /** Punya akses ke area pengelola (Admin atau Petugas). */
+    public function isAdmin(): bool
+    {
+        return $this->can('admin.access');
+    }
+
+    /** Punya akses ke area peminjam. */
+    public function isUser(): bool
+    {
+        return $this->can('user.access');
+    }
+
+    /**
+     * Samakan kolom `role` (admin atau user) dengan izin dari peran Spatie.
+     */
+    public function syncRoleColumn(): void
+    {
+        $this->unsetRelation('roles');
+        $this->unsetRelation('permissions');
+
+        $area = $this->can('admin.access') ? 'admin' : 'user';
+
+        if ($this->role !== $area) {
+            $this->role = $area;
+            $this->save();
+        }
+    }
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 }

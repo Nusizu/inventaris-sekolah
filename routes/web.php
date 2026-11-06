@@ -4,19 +4,20 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\ItemLabelController;
 use App\Http\Controllers\Admin\LoanController as AdminLoanController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReturnLogController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\ScanController as AdminScanController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\ItemController as UserItemController;
 use App\Http\Controllers\User\LoanController as UserLoanController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\ItemLabelController;
-use App\Http\Controllers\Admin\ScanController as AdminScanController;
 use App\Http\Controllers\User\ScanController as UserScanController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return auth()->check()
@@ -37,41 +38,67 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
 });
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+// Area pengelola: tiap bagian dijaga izin spesifik
+Route::middleware(['auth', 'permission:admin.access'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('categories', CategoryController::class)->except('show');
-    Route::resource('items', ItemController::class)->except('show');
+    Route::middleware('permission:categories.manage')->group(function () {
+        Route::resource('categories', CategoryController::class)->except('show');
+    });
 
-    Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
-    Route::post('loans/{loan}/approve', [AdminLoanController::class, 'approve'])->name('loans.approve');
-    Route::get('loans/{loan}/reject', [AdminLoanController::class, 'rejectCreate'])->name('loans.reject.create');
-    Route::post('loans/{loan}/reject', [AdminLoanController::class, 'rejectStore'])->name('loans.reject.store');
-    Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('loans.return.create');
-    Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('loans.return.store');
+    Route::middleware('permission:items.manage')->group(function () {
+        Route::get('items/labels', [ItemLabelController::class, 'index'])->name('items.labels');
+        Route::resource('items', ItemController::class)->except('show');
+    });
 
-    Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
+    Route::middleware('permission:loans.manage')->group(function () {
+        Route::resource('loans', AdminLoanController::class)->only(['index', 'create', 'store', 'destroy']);
+        Route::post('loans/{loan}/approve', [AdminLoanController::class, 'approve'])->name('loans.approve');
+        Route::get('loans/{loan}/reject', [AdminLoanController::class, 'rejectCreate'])->name('loans.reject.create');
+        Route::post('loans/{loan}/reject', [AdminLoanController::class, 'rejectStore'])->name('loans.reject.store');
+    });
 
-    Route::resource('users', UserController::class)->except('show');
+    Route::middleware('permission:returns.manage')->group(function () {
+        Route::get('loans/{loan}/return', [ReturnLogController::class, 'create'])->name('loans.return.create');
+        Route::post('loans/{loan}/return', [ReturnLogController::class, 'store'])->name('loans.return.store');
+        Route::get('return-logs', [ReturnLogController::class, 'index'])->name('return-logs.index');
+    });
 
-    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
-    
-    Route::get('reports/loans', [ReportController::class, 'loans'])->name('reports.loans');
-    Route::get('reports/loans/pdf', [ReportController::class, 'loansPdf'])->name('reports.loans.pdf');
-    Route::get('reports/loans/excel', [ReportController::class, 'loansExcel'])->name('reports.loans.excel');
+    Route::middleware('permission:users.manage')->group(function () {
+        Route::resource('users', UserController::class)->except('show');
+    });
 
-    Route::get('items/labels', [ItemLabelController::class, 'index'])->name('items.labels');
-    Route::get('scan', [AdminScanController::class, 'index'])->name('scan');
+    Route::middleware('permission:roles.manage')->group(function () {
+        Route::resource('roles', RoleController::class)->except('show');
+    });
+
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])
+        ->middleware('permission:activity-logs.view')->name('activity-logs.index');
+
+    Route::middleware('permission:reports.view')->group(function () {
+        Route::get('reports/loans', [ReportController::class, 'loans'])->name('reports.loans');
+        Route::get('reports/loans/pdf', [ReportController::class, 'loansPdf'])->name('reports.loans.pdf');
+        Route::get('reports/loans/excel', [ReportController::class, 'loansExcel'])->name('reports.loans.excel');
+    });
+
+    Route::get('scan', [AdminScanController::class, 'index'])
+        ->middleware('permission:scan.use')->name('scan');
 });
 
-Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
+// Area peminjam
+Route::middleware(['auth', 'permission:user.access'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('items', [UserItemController::class, 'index'])->name('items.index');
-    Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
-    Route::patch('loans/{loan}/cancel', [UserLoanController::class, 'cancel'])->name('loans.cancel');
+    Route::get('items', [UserItemController::class, 'index'])
+        ->middleware('permission:items.browse')->name('items.index');
 
-    Route::get('scan', [UserScanController::class, 'index'])->name('scan');
+    Route::get('scan', [UserScanController::class, 'index'])
+        ->middleware('permission:scan.use')->name('scan');
+
+    Route::middleware('permission:loans.request')->group(function () {
+        Route::resource('loans', UserLoanController::class)->only(['index', 'create', 'store']);
+        Route::patch('loans/{loan}/cancel', [UserLoanController::class, 'cancel'])->name('loans.cancel');
+    });
 });
 
 require __DIR__ . '/auth.php';

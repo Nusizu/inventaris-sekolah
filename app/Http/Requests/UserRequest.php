@@ -9,7 +9,7 @@ class UserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // akses sudah dibatasi middleware role:admin
+        return true; // akses sudah dibatasi middleware permission:users.manage
     }
 
     public function rules(): array
@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($user),
             ],
-            'role' => ['required', Rule::in(['admin', 'user'])],
+            'role' => ['required', Rule::exists('roles', 'name')],
             'password' => [
                 $user ? 'nullable' : 'required',
                 'string',
@@ -54,7 +54,7 @@ class UserRequest extends FormRequest
             'email.max' => 'Email maksimal 255 karakter.',
             'email.unique' => 'Email sudah digunakan.',
             'role.required' => 'Role wajib dipilih.',
-            'role.in' => 'Role yang dipilih tidak valid.',
+            'role.exists' => 'Role yang dipilih tidak valid.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
