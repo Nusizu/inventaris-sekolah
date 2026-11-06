@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Database\Seeders\RolePermissionSeeder;
 
 class RegistrationTest extends TestCase
 {
@@ -24,6 +25,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
+        $this->seed(RolePermissionSeeder::class);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
