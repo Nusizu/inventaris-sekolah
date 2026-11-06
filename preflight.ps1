@@ -126,10 +126,18 @@ Get-ChildItem app -Recurse -Filter *.php |
     ForEach-Object { $_.Matches } |
     ForEach-Object { $_.Groups[1].Value } |
     Sort-Object -Unique |
+    Where-Object { $_ -notmatch '[-.]$' } |
     ForEach-Object {
         $p = 'resources\views\' + ($_ -replace '\.', '\') + '.blade.php'
         if (-not (Test-Path $p)) { $problems += "View dipanggil controller tetapi file tidak ada: $_" }
     }
+
+# View Livewire disusun dinamis (item-list-{scope}), jadi diperiksa terpisah
+foreach ($scope in 'admin', 'user') {
+    if (-not (Test-Path "resources\views\livewire\item-list-$scope.blade.php")) {
+        $problems += "View Livewire tidak ada: livewire.item-list-$scope"
+    }
+}
 
 # 4. Nama route yang dipanggil
 Write-Host '4/8 Memeriksa nama route...' -ForegroundColor Cyan
