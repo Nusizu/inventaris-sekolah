@@ -21,16 +21,19 @@ class DashboardController extends Controller
             'overdue' => Loan::where('status', 'terlambat')->count(),
         ];
 
-        $topItems = Item::has('loans')
-            ->withCount('loans')
+        // Hanya peminjaman yang benar-benar terjadi (bukan menunggu/ditolak/dibatalkan)
+        $counted = ['dipinjam', 'terlambat', 'dikembalikan'];
+
+        $topItems = Item::whereHas('loans', fn ($q) => $q->whereIn('status', $counted))
+            ->withCount(['loans' => fn ($q) => $q->whereIn('status', $counted)])
             ->orderByDesc('loans_count')
             ->orderBy('name')
             ->take(5)
             ->get();
 
         $activeUsers = User::where('role', 'user')
-            ->has('loans')
-            ->withCount('loans')
+            ->whereHas('loans', fn ($q) => $q->whereIn('status', $counted))
+            ->withCount(['loans' => fn ($q) => $q->whereIn('status', $counted)])
             ->orderByDesc('loans_count')
             ->orderBy('name')
             ->take(5)
