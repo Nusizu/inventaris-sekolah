@@ -44,6 +44,12 @@ class ItemList extends Component
         }
     }
 
+    /** Paginasi komponen ini memakai tampilan sendiri (resources/views/pagination/livewire.blade.php). */
+    public function paginationView()
+    {
+        return 'pagination.livewire';
+    }
+
     public function resetFilters(): void
     {
         $this->reset(['search', 'categoryId', 'condition', 'availability']);
