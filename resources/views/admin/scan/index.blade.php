@@ -13,54 +13,24 @@
             @include('scan._scanner', ['scanUrl' => route('admin.scan')])
 
             @if ($code)
-                <div class="bg-white p-6 shadow-sm sm:rounded-lg">
-                    <h3 class="mb-4 text-sm font-semibold text-indigo-700">Hasil Pindai</h3>
+                <div class="card p-6">
+                    <h3 class="mb-4 text-base font-semibold text-gray-900">Hasil Pindai</h3>
 
                     @if (! $item)
-                        <p class="text-sm text-red-600">
-                            Barang dengan kode <span class="font-mono font-semibold">{{ $code }}</span> tidak ditemukan.
-                        </p>
+                        <div role="alert" class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                            <x-icon name="alert-circle" class="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                            <p>Barang dengan kode <span class="font-mono font-semibold">{{ $code }}</span> tidak ditemukan.</p>
+                        </div>
                     @else
                         @php
                             $canBorrow = $item->stock > 0 && $item->condition !== 'rusak berat';
-                            $badge = match ($item->condition) {
-                                'baik' => 'bg-green-100 text-green-800',
-                                'rusak ringan' => 'bg-yellow-100 text-yellow-800',
-                                default => 'bg-red-100 text-red-800',
-                            };
                         @endphp
 
-                        <dl class="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-                            <div class="col-span-2 sm:col-span-3">
-                                <dt class="text-gray-500">Nama Barang</dt>
-                                <dd class="text-lg font-semibold text-gray-900">{{ $item->name }}</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-500">Kode</dt>
-                                <dd class="font-mono text-gray-900">{{ $item->code }}</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-500">Kategori</dt>
-                                <dd class="text-gray-900">{{ $item->category->name }}</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-500">Stok</dt>
-                                <dd class="text-gray-900">{{ number_format($item->stock, 0, ',', '.') }}</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-500">Kondisi</dt>
-                                <dd>
-                                    <span class="rounded-full px-2 py-1 text-xs font-medium {{ $badge }}">
-                                        {{ ucfirst($item->condition) }}
-                                    </span>
-                                </dd>
-                            </div>
-                        </dl>
+                        @include('scan._item', ['item' => $item])
 
-                        <div class="mt-5 flex flex-wrap gap-2">
+                        <div class="mt-5 flex flex-wrap items-center gap-2">
                             @if ($canBorrow)
-                                <a href="{{ route('admin.loans.create', ['item_id' => $item->id]) }}"
-                                   class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                                <a href="{{ route('admin.loans.create', ['item_id' => $item->id]) }}" class="btn btn-primary">
                                     + Tambah Peminjaman
                                 </a>
                             @else
@@ -69,45 +39,44 @@
                                 </span>
                             @endif
 
-                            <a href="{{ route('admin.items.edit', $item) }}"
-                               class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 hover:bg-gray-50">
+                            <a href="{{ route('admin.items.edit', $item) }}" class="btn btn-secondary">
                                 Edit Barang
                             </a>
 
                             @if ($pendingCount > 0)
                                 <a href="{{ route('admin.loans.index', ['status' => 'menunggu', 'q' => $item->name]) }}"
-                                   class="inline-flex items-center justify-center rounded-md border border-purple-300 bg-purple-50 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-purple-700 hover:bg-purple-100">
+                                   class="btn border border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100">
                                     {{ number_format($pendingCount, 0, ',', '.') }} pengajuan menunggu
                                 </a>
                             @endif
                         </div>
 
-                        <h4 class="mb-2 mt-6 text-sm font-semibold text-gray-700">Sedang Dipinjam</h4>
+                        <h4 class="mb-3 mt-8 text-sm font-semibold text-gray-900">Sedang Dipinjam</h4>
 
                         @if ($activeLoans->isEmpty())
-                            <p class="text-sm text-gray-500">Tidak ada peminjaman yang sedang berjalan untuk barang ini.</p>
+                            <p class="rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-500">Tidak ada peminjaman yang sedang berjalan untuk barang ini.</p>
                         @else
-                            <div class="overflow-x-auto">
+                            <div class="-mx-6 overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Peminjam</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Jumlah</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Jatuh Tempo</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Aksi</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Peminjam</th>
+                                            <th class="px-4 py-3 text-left font-semibold">Jumlah</th>
+                                            <th class="px-4 py-3 text-left font-semibold">Jatuh Tempo</th>
+                                            <th class="px-4 py-3 text-left font-semibold">Status</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-100">
                                         @foreach ($activeLoans as $loan)
                                             <tr>
-                                                <td class="px-4 py-3">{{ $loan->user->name }}</td>
+                                                <td class="whitespace-nowrap px-6 py-3 font-medium text-gray-900">{{ $loan->user->name }}</td>
                                                 <td class="px-4 py-3">{{ number_format($loan->quantity, 0, ',', '.') }}</td>
-                                                <td class="px-4 py-3">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
+                                                <td class="whitespace-nowrap px-4 py-3 {{ $loan->status === 'terlambat' ? 'font-medium text-red-600' : 'text-gray-600' }}">{{ $loan->due_date->translatedFormat('j M Y') }}</td>
                                                 <td class="px-4 py-3"><x-loan-status-badge :status="$loan->status" /></td>
-                                                <td class="px-4 py-3">
+                                                <td class="px-6 py-3">
                                                     <a href="{{ route('admin.loans.return.create', $loan) }}"
-                                                       class="text-indigo-600 hover:underline">Kembalikan</a>
+                                                       class="rounded-md border border-brand-600/30 bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 transition-colors hover:bg-brand-100">Kembalikan</a>
                                                 </td>
                                             </tr>
                                         @endforeach

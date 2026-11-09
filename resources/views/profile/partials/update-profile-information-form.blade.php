@@ -1,10 +1,10 @@
-<section>
+<section class="grid gap-6 lg:grid-cols-3">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">Informasi Profil</h2>
-        <p class="mt-1 text-sm text-gray-600">Perbarui nama dan alamat email akun Anda.</p>
+        <h2 class="text-base font-semibold text-gray-900">Informasi Profil</h2>
+        <p class="mt-1 text-sm text-gray-500">Perbarui nama dan alamat email akun Anda.</p>
     </header>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="space-y-5 lg:col-span-2">
         @csrf
         @method('patch')
 
@@ -33,8 +33,10 @@
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition
-                   x-init="setTimeout(() => show = false, 2000)"
-                   class="text-sm text-gray-600">Tersimpan.</p>
+                   x-init="setTimeout(() => show = false, 2500)"
+                   class="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700">
+                    <x-icon name="check-circle" class="h-4 w-4" /> Tersimpan.
+                </p>
             @endif
         </div>
     </form>
