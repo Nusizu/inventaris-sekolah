@@ -1,5 +1,9 @@
 import './bootstrap';
 
+// Font Inter dihosting sendiri (tanpa Google Fonts), jadi tetap jalan di jaringan sekolah/offline.
+// Pasang dulu: npm install @fontsource-variable/inter
+import '@fontsource-variable/inter';
+
 import { Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import flatpickr from 'flatpickr';
 import { Indonesian } from 'flatpickr/dist/l10n/id.js';
@@ -29,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ...baseConfig,
         allowInput: false,
         altInputClass:
-            'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+            'mt-1 block w-full rounded-md border-gray-300 bg-white text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-500 focus:ring-brand-500',
     });
 
     // Field tanggal pada filter (boleh dikosongkan)
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ...baseConfig,
         allowInput: true,
         altInputClass:
-            'rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+            'rounded-md border-gray-300 bg-white text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-500 focus:ring-brand-500',
     });
 
     // Grafik tren peminjaman: dimuat hanya di halaman yang memilikinya

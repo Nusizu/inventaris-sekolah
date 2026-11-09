@@ -1,10 +1,16 @@
 import Chart from 'chart.js/auto';
 
 const COLORS = {
-    dipinjam: '#3b82f6',
-    terlambat: '#ef4444',
-    dikembalikan: '#22c55e',
+    dipinjam: '#0ea5e9', // sky-500
+    terlambat: '#ef4444', // red-500
+    dikembalikan: '#10b981', // emerald-500
 };
+
+// Gaya dasar grafik: font & warna teks mengikuti tema aplikasi
+Chart.defaults.font.family = '"Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#71717a'; // gray-500
+Chart.defaults.borderColor = '#f4f4f5'; // gray-100
 
 const LABELS = {
     dipinjam: 'Dipinjam',
@@ -31,6 +37,7 @@ export default function initLoanTrendChart(canvas) {
             data: data[metric][status].slice(-range),
             backgroundColor: COLORS[status],
             borderRadius: 4,
+            maxBarThickness: 36,
         }));
 
     const updateButtons = () => {
@@ -68,12 +75,19 @@ export default function initLoanTrendChart(canvas) {
                             stacked: true,
                             beginAtZero: true,
                             ticks: { precision: 0 },
+                            border: { display: false },
                             title: { display: true, text: Y_TITLES[metric] },
                         },
                     },
                     plugins: {
-                        legend: { position: 'bottom' },
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, boxHeight: 8, padding: 16 },
+                        },
                         tooltip: {
+                            backgroundColor: '#18181b',
+                            padding: 10,
+                            cornerRadius: 8,
                             callbacks: {
                                 footer: (items) =>
                                     'Total: ' +

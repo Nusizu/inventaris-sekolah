@@ -1,240 +1,127 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route(Auth::user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+{{-- Sidebar. Di layar besar selalu tampil; di HP menjadi panel geser (state: sidebarOpen dari layouts/app) --}}
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-6 xl:-my-px xl:ms-10 xl:flex">
-                    <x-nav-link :href="route(Auth::user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard')"
-                                :active="request()->routeIs('admin.dashboard', 'user.dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+<!-- Latar gelap (HP) -->
+<div x-show="sidebarOpen" x-cloak
+     x-transition:enter="transition-opacity ease-out duration-200"
+     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity ease-in duration-150"
+     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+     @click="sidebarOpen = false"
+     class="fixed inset-0 z-40 bg-gray-900/40 backdrop-blur-sm lg:hidden" aria-hidden="true"></div>
 
-                    @can('admin.access')
-                        @can('categories.manage')
-                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                                {{ __('Kategori') }}
-                            </x-nav-link>
-                        @endcan
+<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+       class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-200 ease-out lg:translate-x-0"
+       aria-label="Menu utama">
 
-                        @can('items.manage')
-                            <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
-                                {{ __('Barang') }}
-                            </x-nav-link>
-                        @endcan
+    <!-- Merek -->
+    <div class="flex h-16 shrink-0 items-center justify-between px-5">
+        <a href="{{ route(Auth::user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard') }}" class="flex items-center gap-3">
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-900 text-white">
+                <x-application-logo class="h-5 w-5" />
+            </span>
+            <span class="text-sm font-semibold leading-tight tracking-tight text-gray-900">
+                {{ config('app.name', 'Inventaris Sekolah') }}
+            </span>
+        </a>
 
-                        @can('loans.manage')
-                            <x-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
-                                {{ __('Peminjaman') }}
-                            </x-nav-link>
-                        @endcan
-
-                        @can('returns.manage')
-                            <x-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
-                                {{ __('Pengembalian') }}
-                            </x-nav-link>
-                        @endcan
-
-                        @can('users.manage')
-                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*', 'admin.roles.*')">
-                                {{ __('Manajemen User') }}
-                            </x-nav-link>
-                        @elsecan('roles.manage')
-                            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
-                                {{ __('Peran') }}
-                            </x-nav-link>
-                        @endcan
-
-                        @can('activity-logs.view')
-                            <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
-                                {{ __('Activity Log') }}
-                            </x-nav-link>
-                        @endcan
-
-                        @can('reports.view')
-                            <x-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
-                                {{ __('Laporan') }}
-                            </x-nav-link>
-                        @endcan
-                    @elsecan('user.access')
-                        @can('items.browse')
-                            <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
-                                {{ __('Daftar Barang') }}
-                            </x-nav-link>
-                        @endcan
-
-                        @can('loans.request')
-                            <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
-                                {{ __('Peminjaman Saya') }}
-                            </x-nav-link>
-                        @endcan
-                    @endcan
-                </div>
-            </div>
-
-            <!-- Sisi kanan: pemindai, notifikasi, pengaturan akun, hamburger -->
-            <div class="flex items-center gap-1">
-                @can('scan.use')
-                    <a href="{{ route(Auth::user()->isAdmin() ? 'admin.scan' : 'user.scan') }}"
-                       class="rounded-md p-2 hover:bg-gray-100 {{ request()->routeIs('admin.scan', 'user.scan') ? 'bg-gray-100 text-gray-800' : 'text-gray-500 hover:text-gray-700' }}"
-                       aria-label="Pindai QR Code" title="Pindai QR Code">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
-                        </svg>
-                    </a>
-                @endcan
-
-                <x-notification-bell />
-
-                <!-- Settings Dropdown -->
-                <div class="hidden xl:flex xl:items-center xl:ms-4">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
-
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                </div>
-
-                <!-- Hamburger -->
-                <div class="flex items-center xl:hidden">
-                    <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                            <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
+        <button type="button" @click="sidebarOpen = false"
+                class="-mr-2 rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
+                aria-label="Tutup menu">
+            <x-icon name="close" class="h-5 w-5" />
+        </button>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden xl:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route(Auth::user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard')"
-                                   :active="request()->routeIs('admin.dashboard', 'user.dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+    <!-- Tautan menu -->
+    <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <x-nav-link :href="route(Auth::user()->isAdmin() ? 'admin.dashboard' : 'user.dashboard')"
+                    :active="request()->routeIs('admin.dashboard', 'user.dashboard')" icon="home">
+            {{ __('Dashboard') }}
+        </x-nav-link>
 
-            @can('admin.access')
-                @can('categories.manage')
-                    <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                        {{ __('Kategori') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('items.manage')
-                    <x-responsive-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
-                        {{ __('Barang') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('loans.manage')
-                    <x-responsive-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')">
-                        {{ __('Peminjaman') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('returns.manage')
-                    <x-responsive-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')">
-                        {{ __('Pengembalian') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('users.manage')
-                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*', 'admin.roles.*')">
-                        {{ __('Manajemen User') }}
-                    </x-responsive-nav-link>
-                @elsecan('roles.manage')
-                    <x-responsive-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
-                        {{ __('Peran') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('activity-logs.view')
-                    <x-responsive-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')">
-                        {{ __('Activity Log') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('reports.view')
-                    <x-responsive-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')">
-                        {{ __('Laporan') }}
-                    </x-responsive-nav-link>
-                @endcan
-            @elsecan('user.access')
-                @can('items.browse')
-                    <x-responsive-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')">
-                        {{ __('Daftar Barang') }}
-                    </x-responsive-nav-link>
-                @endcan
-
-                @can('loans.request')
-                    <x-responsive-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')">
-                        {{ __('Peminjaman Saya') }}
-                    </x-responsive-nav-link>
-                @endcan
+        @can('admin.access')
+            @can('categories.manage')
+                <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')" icon="tag">
+                    {{ __('Kategori') }}
+                </x-nav-link>
             @endcan
-        </div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+            @can('items.manage')
+                <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')" icon="cube">
+                    {{ __('Barang') }}
+                </x-nav-link>
+            @endcan
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+            @can('loans.manage')
+                <x-nav-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')" icon="swap">
+                    {{ __('Peminjaman') }}
+                </x-nav-link>
+            @endcan
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+            @can('returns.manage')
+                <x-nav-link :href="route('admin.return-logs.index')" :active="request()->routeIs('admin.return-logs.*')" icon="return">
+                    {{ __('Pengembalian') }}
+                </x-nav-link>
+            @endcan
 
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
+            @can('users.manage')
+                <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*', 'admin.roles.*')" icon="users">
+                    {{ __('Manajemen User') }}
+                </x-nav-link>
+            @elsecan('roles.manage')
+                <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')" icon="shield">
+                    {{ __('Peran') }}
+                </x-nav-link>
+            @endcan
+
+            @can('activity-logs.view')
+                <x-nav-link :href="route('admin.activity-logs.index')" :active="request()->routeIs('admin.activity-logs.*')" icon="clock">
+                    {{ __('Activity Log') }}
+                </x-nav-link>
+            @endcan
+
+            @can('reports.view')
+                <x-nav-link :href="route('admin.reports.loans')" :active="request()->routeIs('admin.reports.*')" icon="chart">
+                    {{ __('Laporan') }}
+                </x-nav-link>
+            @endcan
+        @elsecan('user.access')
+            @can('items.browse')
+                <x-nav-link :href="route('user.items.index')" :active="request()->routeIs('user.items.*')" icon="search">
+                    {{ __('Daftar Barang') }}
+                </x-nav-link>
+            @endcan
+
+            @can('loans.request')
+                <x-nav-link :href="route('user.loans.index')" :active="request()->routeIs('user.loans.*')" icon="swap">
+                    {{ __('Peminjaman Saya') }}
+                </x-nav-link>
+            @endcan
+        @endcan
+    </nav>
+
+    <!-- Akun: profil + keluar -->
+    <div class="shrink-0 border-t border-gray-200 p-3">
+        <div class="flex items-center gap-1">
+            <a href="{{ route('profile.edit') }}"
+               class="group flex min-w-0 flex-1 items-center gap-3 rounded-md p-2 transition-colors hover:bg-gray-50 {{ request()->routeIs('profile.*') ? 'bg-gray-100' : '' }}"
+               title="Profil saya">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+                    {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr(Auth::user()->name, 0, 1)) }}
+                </span>
+                <span class="min-w-0">
+                    <span class="block truncate text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
+                    <span class="block truncate text-xs text-gray-500">{{ Auth::user()->email }}</span>
+                </span>
+            </a>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                        class="rounded-md p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                        aria-label="Keluar" title="Keluar">
+                    <x-icon name="logout" class="h-5 w-5" />
+                </button>
+            </form>
         </div>
     </div>
-</nav>
+</aside>

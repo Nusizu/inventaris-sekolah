@@ -1,10 +1,159 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================================================
+   1. BASE — tampilan dasar elemen HTML
+   ========================================================================== */
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900 antialiased;
+    }
+
+    ::selection {
+        @apply bg-brand-100 text-brand-900;
+    }
+
+    /* Input, select, textarea: seragam di seluruh aplikasi */
+    [type='text'],
+    [type='email'],
+    [type='password'],
+    [type='number'],
+    [type='date'],
+    [type='search'],
+    [type='tel'],
+    [type='url'],
+    select,
+    textarea {
+        @apply border-gray-300 text-gray-900 placeholder:text-gray-400;
+    }
+
+    [type='text']:focus,
+    [type='email']:focus,
+    [type='password']:focus,
+    [type='number']:focus,
+    [type='date']:focus,
+    [type='search']:focus,
+    [type='tel']:focus,
+    [type='url']:focus,
+    select:focus,
+    textarea:focus {
+        @apply border-brand-500 ring-brand-500;
+    }
+
+    [type='checkbox'],
+    [type='radio'] {
+        @apply border-gray-300 text-brand-600 focus:ring-brand-500;
+    }
+
+    /* Tabel: header kecil & rapi, baris menyorot saat disentuh kursor */
+    thead th {
+        @apply whitespace-nowrap text-xs tracking-wider text-gray-500;
+        /* Sengaja CSS biasa, bukan "@apply uppercase": @apply akan ikut menyalin
+           aturan jembatan `a.uppercase` di bagian 5 dan menghasilkan selektor rusak. */
+        text-transform: uppercase;
+    }
+
+    tbody tr {
+        @apply transition-colors;
+    }
+
+    tbody tr:hover {
+        @apply bg-gray-50/70;
+    }
+
+    /* Angka rata (tidak "melompat") di tabel */
+    td {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/* ==========================================================================
+   2. COMPONENTS — kelas siap pakai (dipakai komponen Blade & halaman)
+   ========================================================================== */
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2
+               disabled:pointer-events-none disabled:opacity-50;
+    }
+
+    .btn-primary {
+        @apply bg-gray-800 text-white shadow-sm hover:bg-gray-700 active:bg-gray-900;
+    }
+
+    .btn-secondary {
+        @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 active:bg-gray-100;
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800;
+    }
+
+    .card {
+        @apply rounded-lg bg-white shadow-sm;
+    }
+}
+
+/* ==========================================================================
+   3. UTILITAS KECIL
+   ========================================================================== */
+
 /* Kolom pencarian cukup lebar agar placeholder terbaca */
-input[name="q"] {
+input[name='q'] {
     min-width: 16rem;
 }
+
 [x-cloak] {
     display: none !important;
+}
+
+/* ==========================================================================
+   4. PUSTAKA PIHAK KETIGA — flatpickr (pemilih tanggal)
+   ========================================================================== */
+.flatpickr-calendar {
+    @apply rounded-lg border-0 font-sans shadow-lg;
+}
+
+.flatpickr-calendar .flatpickr-day {
+    @apply rounded-md;
+}
+
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+    @apply border-brand-600 bg-brand-600 text-white;
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+    @apply border-brand-500;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+    @apply border-gray-100 bg-gray-100;
+}
+
+/* ==========================================================================
+   5. JEMBATAN KOMPATIBILITAS
+   --------------------------------------------------------------------------
+   Halaman lama masih memakai kelas bawaan Breeze (tombol UPPERCASE, kartu
+   persegi di layar kecil). Aturan di bawah membuat halaman lama tetap
+   terlihat serasi TANPA harus diedit sekarang.
+   Setelah semua halaman dimigrasi ke `.btn` / `.card`, hapus bagian ini.
+   ========================================================================== */
+a.uppercase,
+button.uppercase {
+    text-transform: none;
+    font-size: 0.875rem;
+    letter-spacing: 0;
+}
+
+/* Kartu tetap membulat di layar HP (kelas lama hanya membulat di >= sm) */
+.sm\:rounded-lg {
+    border-radius: 0.75rem;
 }
