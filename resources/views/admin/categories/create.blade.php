@@ -11,7 +11,7 @@
                 'Tambah' => null,
             ]" />
 
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="card p-6">
                 <form method="POST" action="{{ route('admin.categories.store') }}">
                     @csrf
                     @include('admin.categories._form')

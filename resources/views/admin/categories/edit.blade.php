@@ -11,7 +11,7 @@
                 'Edit' => null,
             ]" />
 
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="card p-6">
                 <form method="POST" action="{{ route('admin.categories.update', $category) }}">
                     @csrf
                     @method('PUT')

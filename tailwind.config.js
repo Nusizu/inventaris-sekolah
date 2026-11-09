@@ -2,6 +2,15 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import colors from 'tailwindcss/colors';
 import forms from '@tailwindcss/forms';
 
+/**
+ * Palet warna aplikasi.
+ *
+ * - `gray`  → dialihkan ke skala `zinc` (netral, sedikit dingin).
+ * - `brand` → warna aksen (teal). Angka 500 dan 600 sengaja digeser satu
+ *             tingkat lebih gelap supaya kontras teks/fokus memenuhi WCAG AA.
+ *
+ * Ingin ganti warna aksen? Cukup ubah isi `brand` di bawah ini.
+ */
 const brand = {
     50: colors.teal[50],
     100: colors.teal[100],
@@ -19,7 +28,6 @@ const brand = {
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.js',
@@ -34,7 +42,6 @@ export default {
             colors: {
                 gray: colors.zinc,
                 brand,
-                indigo: brand,
             },
 
             // Sudut lebih lembut: kartu = lg (12px), tombol & input = md (8px)
@@ -49,11 +56,6 @@ export default {
                 DEFAULT: '0 0 0 1px rgb(24 24 27 / 0.06), 0 1px 3px 0 rgb(24 24 27 / 0.06)',
                 md: '0 4px 12px -2px rgb(24 24 27 / 0.08), 0 0 0 1px rgb(24 24 27 / 0.05)',
                 lg: '0 12px 28px -6px rgb(24 24 27 / 0.14), 0 0 0 1px rgb(24 24 27 / 0.05)',
-            },
-
-            // `tracking-widest` bawaan Breeze terlalu renggang untuk tombol
-            letterSpacing: {
-                widest: '0.01em',
             },
         },
     },

@@ -2,80 +2,40 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Laporan Peminjaman Barang</title>
-    <style>
-        @page { margin: 28px 32px; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 10px; color: #1f2937; }
-        h1 { font-size: 16px; margin: 0 0 6px; }
-        .meta { color: #4b5563; line-height: 1.6; margin-bottom: 10px; }
-        .summary { margin-bottom: 12px; padding: 6px 8px; background: #f3f4f6; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #1f2937; color: #ffffff; text-align: left; padding: 5px 6px; font-size: 9px; }
-        td { padding: 4px 6px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
-        .center { text-align: center; }
-        .code { color: #6b7280; font-size: 8px; }
-        .empty { padding: 14px; text-align: center; color: #6b7280; }
-        .footer { margin-top: 14px; color: #6b7280; font-size: 9px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title }}</title>
 </head>
-<body>
-    <h1>Laporan Peminjaman Barang</h1>
+{{-- Semua gaya ditulis inline & berbasis tabel karena banyak aplikasi email (mis. Outlook) mengabaikan CSS modern --}}
+<body style="margin:0;padding:0;background-color:#fafafa;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fafafa;">
+        <tr>
+            <td align="center" style="padding:32px 16px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+                    <tr>
+                        <td style="padding:0 4px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#18181b;">
+                            <span style="display:inline-block;width:10px;height:10px;margin-right:8px;background-color:#0f766e;border-radius:3px;"></span>{{ config('app.name') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color:#ffffff;border:1px solid #e4e4e7;border-radius:12px;padding:28px;font-family:Arial,Helvetica,sans-serif;color:#27272a;">
+                            <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;font-weight:700;color:#18181b;">{{ $title }}</h1>
+                            <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#52525b;">Halo, {{ $name }}.</p>
+                            <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#27272a;">{{ $body }}</p>
 
-    <div class="meta">
-        Periode: <strong>{{ $periodLabel }}</strong><br>
-        Status: <strong>{{ $statusLabel }}</strong>
-    </div>
-
-    <div class="summary">
-        Total peminjaman: <strong>{{ number_format($totalLoans, 0, ',', '.') }}</strong>
-        &nbsp;|&nbsp; Total unit: <strong>{{ number_format($totalUnits, 0, ',', '.') }}</strong>
-        @foreach (\App\Models\Loan::STATUSES as $status)
-            &nbsp;|&nbsp; {{ ucfirst($status) }}: <strong>{{ number_format($perStatus->get($status, 0), 0, ',', '.') }}</strong>
-        @endforeach
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="center" style="width: 4%;">No</th>
-                <th style="width: 14%;">Peminjam</th>
-                <th style="width: 18%;">Barang</th>
-                <th style="width: 11%;">Kategori</th>
-                <th class="center" style="width: 6%;">Jumlah</th>
-                <th style="width: 10%;">Tanggal Pinjam</th>
-                <th style="width: 10%;">Jatuh Tempo</th>
-                <th style="width: 10%;">Tanggal Kembali</th>
-                <th style="width: 9%;">Status</th>
-                <th style="width: 8%;">Kondisi Kembali</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($loans as $loan)
-                <tr>
-                    <td class="center">{{ $loop->iteration }}</td>
-                    <td>{{ $loan->user->name }}</td>
-                    <td>
-                        {{ $loan->item->name }}<br>
-                        <span class="code">{{ $loan->item->code }}</span>
-                    </td>
-                    <td>{{ $loan->item->category->name }}</td>
-                    <td class="center">{{ number_format($loan->quantity, 0, ',', '.') }}</td>
-                    <td>{{ $loan->loan_date->translatedFormat('j M Y') }}</td>
-                    <td>{{ $loan->due_date->translatedFormat('j M Y') }}</td>
-                    <td>{{ $loan->returnLog ? $loan->returnLog->returned_at->translatedFormat('j M Y') : '-' }}</td>
-                    <td>{{ ucfirst($loan->status) }}</td>
-                    <td>{{ $loan->returnLog ? ucfirst($loan->returnLog->condition_on_return) : '-' }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="10" class="empty">Tidak ada data peminjaman untuk filter ini.</td>
-                </tr>
-            @endforelse
-        </tbody>
+                            <a href="{{ $url }}"
+                               style="display:inline-block;background-color:#27272a;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;">
+                                {{ $actionText }}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:16px 4px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#a1a1aa;">
+                            Pesan otomatis dari {{ config('app.name') }}.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </table>
-
-    <div class="footer">
-        Dicetak pada {{ $printedAt }} oleh {{ $printedBy }}.
-    </div>
 </body>
 </html>

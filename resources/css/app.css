@@ -52,10 +52,7 @@
 
     /* Tabel: header kecil & rapi, baris menyorot saat disentuh kursor */
     thead th {
-        @apply whitespace-nowrap text-xs tracking-wider text-gray-500;
-        /* Sengaja CSS biasa, bukan "@apply uppercase": @apply akan ikut menyalin
-           aturan jembatan `a.uppercase` di bagian 5 dan menghasilkan selektor rusak. */
-        text-transform: uppercase;
+        @apply whitespace-nowrap text-xs uppercase tracking-wider text-gray-500;
     }
 
     tbody tr {
@@ -136,24 +133,4 @@ input[name='q'] {
 
 .flatpickr-calendar .flatpickr-day:hover {
     @apply border-gray-100 bg-gray-100;
-}
-
-/* ==========================================================================
-   5. JEMBATAN KOMPATIBILITAS
-   --------------------------------------------------------------------------
-   Halaman lama masih memakai kelas bawaan Breeze (tombol UPPERCASE, kartu
-   persegi di layar kecil). Aturan di bawah membuat halaman lama tetap
-   terlihat serasi TANPA harus diedit sekarang.
-   Setelah semua halaman dimigrasi ke `.btn` / `.card`, hapus bagian ini.
-   ========================================================================== */
-a.uppercase,
-button.uppercase {
-    text-transform: none;
-    font-size: 0.875rem;
-    letter-spacing: 0;
-}
-
-/* Kartu tetap membulat di layar HP (kelas lama hanya membulat di >= sm) */
-.sm\:rounded-lg {
-    border-radius: 0.75rem;
 }
