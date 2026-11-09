@@ -13,7 +13,7 @@
         </x-input-label>
 
         @if ($builtIn)
-            <x-text-input id="name" type="text" class="mt-1 block w-full bg-gray-100" :value="$role->name" disabled />
+            <x-text-input id="name" type="text" class="mt-1 block w-full" :value="$role->name" disabled />
             <p class="mt-1 text-xs text-gray-500">Nama peran bawaan tidak dapat diubah.</p>
         @else
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
@@ -27,9 +27,13 @@
         <p class="text-sm font-medium text-gray-700">Izin</p>
 
         @if ($isAdminRole)
-            <p class="mt-1 text-xs text-gray-500">Peran Admin selalu memegang seluruh izin pengelola dan tidak dapat diubah.</p>
+            <p class="mt-2 rounded-md border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-brand-800">
+                Peran Admin selalu memegang seluruh izin pengelola dan tidak dapat diubah.
+            </p>
         @elseif ($isUserRole)
-            <p class="mt-1 text-xs text-gray-500">Peran User wajib memiliki akses area peminjam dan tidak dapat masuk area pengelola.</p>
+            <p class="mt-2 rounded-md border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-brand-800">
+                Peran User wajib memiliki akses area peminjam dan tidak dapat masuk area pengelola.
+            </p>
         @else
             <p class="mt-1 text-xs text-gray-500">
                 Pilih tepat satu izin akses area, lalu izin fitur yang diperlukan.
@@ -39,12 +43,13 @@
 
         <x-input-error :messages="$errors->get('permissions')" class="mt-2" />
 
-        <div class="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             @foreach (\App\Support\Permissions::grouped() as $group => $items)
-                <fieldset class="rounded-md border border-gray-200 p-4">
-                    <legend class="px-2 text-sm font-semibold text-gray-700">{{ $group }}</legend>
+                <fieldset class="rounded-lg border border-gray-200 p-4">
+                    <legend class="sr-only">{{ $group }}</legend>
+                    <h4 class="mb-2 text-sm font-semibold text-gray-900" aria-hidden="true">{{ $group }}</h4>
 
-                    <div class="space-y-2">
+                    <div class="-mx-2 space-y-0.5">
                         @foreach ($items as $name => $label)
                             @php
                                 $forced = $isAdminRole
@@ -54,13 +59,13 @@
                                 $checked = $forced || (! $isAdminRole && in_array($name, $selected, true));
                             @endphp
 
-                            <label class="flex items-start gap-2 text-sm text-gray-700">
+                            <label class="flex items-start gap-3 rounded-md px-2 py-2 text-sm text-gray-700 {{ $disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50' }}">
                                 <input type="checkbox" name="permissions[]" value="{{ $name }}"
                                        @checked($checked) @disabled($disabled)
-                                       class="mt-0.5 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                <span>
+                                       class="mt-0.5 rounded border-gray-300 text-brand-600 shadow-sm focus:ring-brand-500">
+                                <span class="min-w-0">
                                     {{ $label }}
-                                    <span class="block font-mono text-xs text-gray-400">{{ $name }}</span>
+                                    <span class="block truncate font-mono text-xs text-gray-400">{{ $name }}</span>
                                 </span>
                             </label>
                         @endforeach
@@ -71,7 +76,4 @@
     </div>
 </div>
 
-<div class="mt-6 flex items-center gap-3">
-    <x-primary-button>Simpan</x-primary-button>
-    <a href="{{ route('admin.roles.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Batal</a>
-</div>
+<x-form-actions :cancel="route('admin.roles.index')" />

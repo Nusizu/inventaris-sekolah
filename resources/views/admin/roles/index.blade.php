@@ -12,28 +12,27 @@
 
             <x-flash-message />
 
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
-                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-sm text-gray-600">
+            <div class="card p-6">
+                <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="max-w-2xl text-sm text-gray-500">
                         Peran menentukan halaman dan aksi yang boleh diakses. Berikan peran ke user lewat menu Manajemen User.
                     </p>
 
-                    <a href="{{ route('admin.roles.create') }}"
-                       class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary sm:shrink-0">
                         + Tambah Peran
                     </a>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="-mx-6 overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 text-sm">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">No</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Peran</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Jenis</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Jumlah Izin</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Jumlah User</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Aksi</th>
+                                <th class="px-6 py-3 text-left font-semibold">No</th>
+                                <th class="px-4 py-3 text-left font-semibold">Peran</th>
+                                <th class="px-4 py-3 text-left font-semibold">Jenis</th>
+                                <th class="px-4 py-3 text-left font-semibold">Jumlah Izin</th>
+                                <th class="px-4 py-3 text-left font-semibold">Jumlah User</th>
+                                <th class="px-6 py-3 text-left font-semibold">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -42,25 +41,25 @@
                                     $builtIn = in_array($role->name, \App\Support\Permissions::PROTECTED_ROLES, true);
                                 @endphp
                                 <tr>
-                                    <td class="px-4 py-3">{{ $loop->iteration }}</td>
-                                    <td class="px-4 py-3 font-medium">{{ ucfirst($role->name) }}</td>
+                                    <td class="px-6 py-3 text-gray-500">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-3"><x-role-badge :role="$role->name" /></td>
                                     <td class="px-4 py-3">
-                                        <span class="rounded-full px-2 py-1 text-xs font-medium {{ $builtIn ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-700' }}">
+                                        <span class="inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset {{ $builtIn ? 'bg-violet-50 text-violet-700 ring-violet-600/20' : 'bg-gray-100 text-gray-600 ring-gray-500/20' }}">
                                             {{ $builtIn ? 'Bawaan' : 'Kustom' }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-3">{{ number_format($role->permissions_count, 0, ',', '.') }}</td>
                                     <td class="px-4 py-3">{{ number_format($role->users_count, 0, ',', '.') }}</td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center gap-3">
-                                            <a href="{{ route('admin.roles.edit', $role) }}" class="text-indigo-600 hover:underline">Edit</a>
+                                    <td class="px-6 py-3">
+                                        <div class="flex items-center gap-4 whitespace-nowrap font-medium">
+                                            <a href="{{ route('admin.roles.edit', $role) }}" class="text-brand-600 hover:text-brand-700 hover:underline">Edit</a>
 
                                             @unless ($builtIn)
                                                 <form method="POST" action="{{ route('admin.roles.destroy', $role) }}"
                                                       onsubmit="return confirm({{ \Illuminate\Support\Js::from('Hapus peran ' . $role->name . '?') }})">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                                                    <button type="submit" class="text-red-600 hover:text-red-700 hover:underline">Hapus</button>
                                                 </form>
                                             @endunless
                                         </div>
