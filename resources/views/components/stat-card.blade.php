@@ -10,7 +10,8 @@
     };
 @endphp
 
-<div class="card group relative p-5 transition-shadow {{ $href ? 'hover:shadow-md' : '' }}">
+{{-- Class tambahan (mis. lebar kolom grid) bisa diberikan lewat atribut: <x-stat-card class="lg:col-span-2" ... /> --}}
+<div {{ $attributes->merge(['class' => 'card group relative p-5 transition-shadow ' . ($href ? 'hover:shadow-md' : '')]) }}>
     <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
             <span class="h-2 w-2 rounded-full {{ $dot }}"></span>
