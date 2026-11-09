@@ -11,7 +11,7 @@
                 'Ajukan' => null,
             ]" />
 
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="card p-6">
                 <form method="POST" action="{{ route('user.loans.store') }}">
                     @csrf
                     @include('loans._form', ['cancelUrl' => route('user.loans.index')])

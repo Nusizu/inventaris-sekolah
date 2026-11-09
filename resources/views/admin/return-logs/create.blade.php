@@ -11,37 +11,9 @@
                 'Pengembalian' => null,
             ]" />
 
-            <div class="mb-6 bg-white p-6 shadow-sm sm:rounded-lg">
-                <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">Detail Peminjaman</h3>
-                <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-                    <div>
-                        <dt class="text-gray-500">Peminjam</dt>
-                        <dd class="font-medium text-gray-900">{{ $loan->user->name }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-gray-500">Barang</dt>
-                        <dd class="font-medium text-gray-900">{{ $loan->item->name }} ({{ $loan->item->code }})</dd>
-                    </div>
-                    <div>
-                        <dt class="text-gray-500">Jumlah</dt>
-                        <dd class="font-medium text-gray-900">{{ number_format($loan->quantity, 0, ',', '.') }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-gray-500">Status</dt>
-                        <dd><x-loan-status-badge :status="$loan->status" /></dd>
-                    </div>
-                    <div>
-                        <dt class="text-gray-500">Tanggal Pinjam</dt>
-                        <dd class="font-medium text-gray-900">{{ $loan->loan_date->translatedFormat('j M Y') }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-gray-500">Jatuh Tempo</dt>
-                        <dd class="font-medium text-gray-900">{{ $loan->due_date->translatedFormat('j M Y') }}</dd>
-                    </div>
-                </dl>
-            </div>
+            @include('loans._summary', ['loan' => $loan, 'title' => 'Detail Peminjaman'])
 
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="card p-6">
                 <form method="POST" action="{{ route('admin.loans.return.store', $loan) }}">
                     @csrf
 
@@ -61,7 +33,7 @@
                                 Kondisi Barang Saat Dikembalikan <span class="text-red-600">*</span>
                             </x-input-label>
                             <select id="condition_on_return" name="condition_on_return" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
                                 <option value="">-- Pilih Kondisi --</option>
                                 @foreach (\App\Models\Item::CONDITIONS as $condition)
                                     <option value="{{ $condition }}" @selected(old('condition_on_return') === $condition)>
@@ -76,14 +48,14 @@
                             <x-input-label for="notes">Catatan</x-input-label>
                             <textarea id="notes" name="notes" rows="3"
                                       placeholder="Contoh: Lensa objektif tergores di bagian samping"
-                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                                      class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">{{ old('notes') }}</textarea>
                             <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                         </div>
                     </div>
 
-                    <div class="mt-6 flex items-center gap-3">
+                    <div class="mt-8 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+                        <a href="{{ route('admin.loans.index') }}" class="btn btn-secondary">Batal</a>
                         <x-primary-button>Simpan Pengembalian</x-primary-button>
-                        <a href="{{ route('admin.loans.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Batal</a>
                     </div>
                 </form>
             </div>

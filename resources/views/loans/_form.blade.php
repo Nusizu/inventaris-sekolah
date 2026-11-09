@@ -5,7 +5,7 @@
                 Peminjam <span class="text-red-600">*</span>
             </x-input-label>
             <select id="user_id" name="user_id" required autofocus
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
                 <option value="">-- Pilih Peminjam --</option>
                 @foreach ($users as $user)
                     <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
@@ -22,10 +22,10 @@
             Barang <span class="text-red-600">*</span>
         </x-input-label>
         <select id="item_id" name="item_id" required {{ isset($users) ? '' : 'autofocus' }}
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
             <option value="">-- Pilih Barang --</option>
             @foreach ($items as $item)
-                    <option value="{{ $item->id }}" @selected(old('item_id', request('item_id')) == $item->id)>
+                <option value="{{ $item->id }}" @selected(old('item_id', request('item_id')) == $item->id)>
                     {{ $item->name }} ({{ $item->code }}) - stok: {{ number_format($item->stock, 0, ',', '.') }}
                 </option>
             @endforeach
@@ -65,7 +65,8 @@
     </div>
 </div>
 
-<div class="mt-6 flex items-center gap-3">
+{{-- Tombol: di HP bertumpuk (Simpan di atas), di layar lebar rata kanan --}}
+<div class="mt-8 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+    <a href="{{ $cancelUrl }}" class="btn btn-secondary">Batal</a>
     <x-primary-button>Simpan</x-primary-button>
-    <a href="{{ $cancelUrl }}" class="text-sm text-gray-600 hover:text-gray-900">Batal</a>
 </div>
